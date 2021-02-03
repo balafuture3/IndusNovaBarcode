@@ -1,7 +1,6 @@
-import 'package:flutter/cupertino.dart';
+
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class Page1 extends StatefulWidget {
   @override
@@ -14,6 +13,8 @@ class Page1State extends State<Page1> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     // Future<void> scanBarcodeNormal() async {
     //   String barcodeScanRes;
     //   // Platform messages may fail, so we use a try/catch PlatformException.
@@ -53,32 +54,81 @@ class Page1State extends State<Page1> {
     //   });
     // }
 
-    return SafeArea(
-      child: SingleChildScrollView(
-        child: Container(
-          child:
-          Column(
-            children: [
-              TextFormField(
-                enabled:true,
-                controller: BarcodeController,
+    return Scaffold(
+      body:SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+              width: width,
+              height: height,
+              child:
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: new TextField(
+                      onSubmitted: (value){
+                        showDialog<void>(
+                          context: context,
+                          barrierDismissible: false, // user must tap button!
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Text submit"),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text('OK'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
 
-              ),
-            ],
-          )
-        ),
-        // child: Column(
-        //   children:
-        //   [
-        //     RaisedButton(
-        //         onPressed: () => scanBarcodeNormal(),
-        //         child: Text("Start barcode scan")),
-        //
-        //
-        //
-        //   ],
-        // )
+                      controller: BarcodeController,
+                      decoration: InputDecoration(
+                        labelText: 'Package Slip Bar Code',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16.0,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+          ),
+          // child: Column(
+          //   children:
+          //   [
+          //     RaisedButton(
+          //         onPressed: () => scanBarcodeNormal(),
+          //         child: Text("Start barcode scan")),
+          //
+          //
+          //
+          //   ],
+          // )
+
+    ),
       ),
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Container(
+              child: Image.asset('logo.png'),
+              width: 50,
+              height: 50,
+            ),
+            Text("Indus Nova Packaging"),
+          ],
+        ),
+    ),
     );
+
   }
 }

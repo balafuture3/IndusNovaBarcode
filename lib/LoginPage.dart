@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:html';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -167,47 +166,92 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               width: width,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  SizedBox(
+                    height: height / 20,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                       Row(
+                         mainAxisAlignment: MainAxisAlignment.center,
+                         children: [
+                           Container(
+                            child: Image.asset('logo.png'),
+                            width: 100,
+                            height: 100,
+                      ),
+                           SizedBox(width: width/2,)
+                         ],
+                       ),
+                      SizedBox(
+                        height: height / 60,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left:16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Indus ",
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),),
+                            Text(
+                              "Nova ",
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),),
+                            Text(
+                              "Packaging",
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),),
+                          ],),
+                      ),
+                    ],
+                  ),
+
+
                   SizedBox(
                     height: height / 10,
                   ),
-                  new Container(
-                    child: Image.asset('logo.png'),
-                    width: 150,
-                    height: 150,
-                  ),
-                  SizedBox(
-                    height: height / 30,
-                  ),
-              Row(
+                ],
+              ),
+            ),
+            SizedBox(
+              height: height / 40,
+            ),
+            Container(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                Text(
-                  "Indus ",
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),),
-                Text(
-                  "Nova ",
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),),
-                Text(
-                  "Packaging",
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),),
-              ],),
-
-                  SizedBox(
-                    height: height / 30,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () {},
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 24.0),
+                      child: InkWell(
+                        child: Container(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text("Login "),
+                        ),
+                        onTap: () {
+                          // Navigator.pushReplacement(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) =>
+                          //           ForgotPasswordPage()),
+                          // );
+                        },
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -273,7 +317,7 @@ class _LoginScreenState extends State<LoginScreen> {
             //   ),
             // ),
             SizedBox(
-              height: height / 20,
+              height: height / 40,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 24.0, right: 24),
@@ -350,8 +394,19 @@ class _LoginScreenState extends State<LoginScreen> {
             // buildButtonContainer(),
 
             SizedBox(
-              height: height / 30,
+              height: height /10,
             ),
+            // Container(
+            //   decoration: BoxDecoration(
+            //     color: Colors.blue,
+            //     borderRadius: BorderRadius.only(topLeft:  Radius.circular(width*0.9)),
+            //      // border: Border.all(width: 3,color: Colors.green,style: BorderStyle.solid)
+            //   ),
+            //
+            //   width: width,
+            //   height: height / 7,
+            //
+            // ),
             //
             // Container(
             //   child: Center(
