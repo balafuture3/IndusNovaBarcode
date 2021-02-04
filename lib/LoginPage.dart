@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:packingvsdispatch/CommonFunctions/CommonFunctions.dart';
 import 'package:packingvsdispatch/Model/LoginResponse.dart';
 import 'package:packingvsdispatch/Page1.dart';
 import 'package:http/http.dart' as http;
@@ -9,119 +11,21 @@ import 'package:http/http.dart' as http;
 class LoginScreen extends StatefulWidget {
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   LoginResponse li;
+static String csrftoken;
+
+  static String cookie;
 
 
 
-  Future<http.Response> apicall() async {
-    setState(() {
-      loading = true;
-    });
-    String username = 'mobileuser';
-    String password = 'sap@1234';
-    String basicAuth =
-        'Basic ' + base64Encode(utf8.encode('$username:$password'));
-    print(basicAuth);
-
-    var url;
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      'Authorization': basicAuth,
-      "x-csrf-token": "fetch",
-    };
-    url = "http://27.100.26.22:44303/sap/opu/odata/sap/ZWMPICKPACK_SRV/ZC_WMUser?\$filter=(UserName eq 'ADMIN' and Password eq 'Admin')";
-
-    // print(url);
-    // print(headers);
-    var response = await http.get(url,
-        headers:headers,);
 
 
-    print(response.body);
 
-    if (response.statusCode == 200)
-    {
-      print("headers:  ${response.headers["x-csrf-token"]}");
-      print("headers:  ${response.headers["content-type"]}");
-      print("headers:  ${response.headers["sap-processing-info"]}");
-      li = LoginResponse.fromJson(json.decode(response.body));
-      setState(() {
-        loading = false;
-      });
-      print(li.d.results[0].success);
-      if (li.d.results[0].success)
-      {
-        // print(li.d.results[0].message);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  Page1()),
-        );
-        showDialog<void>(
-            context: context,
-            barrierDismissible: false, // user must tap button!
-            builder: (BuildContext context) {
-              return AlertDialog(
-                content:
-                Text(li.d.results[0].message ),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text('OK'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            });
 
-      } else
-        showDialog<void>(
-            context: context,
-            barrierDismissible: false, // user must tap button!
-            builder: (BuildContext context) {
-              return AlertDialog(
-                content:
-                     Text(li.d.results[0].message ),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text('OK'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            });
-
-      // showDialog(
-      //     context: context,
-      //     builder:(_) =>AlertDialog(
-      //       title: Text(
-      //         li.alert,
-      //         style: TextStyle(color: Colors.red),
-      //
-      //       ),
-      //       content:Text(
-      //           li.alert,
-      //           style: TextStyle(color: Colors.red),)
-      //     ));
-
-    } else {
-      setState(() {
-        loading = false;
-      });
-      print("Retry");
-    }
-    print("response: ${response.statusCode}");
-    print("response: ${response.body}");
-    return response;
-  }
 
   Future<bool> check() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -143,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool validateP = false;
   static TextEditingController emailController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
+  static TextEditingController passwordController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -172,26 +76,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: height / 20,
                   ),
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                       Row(
-                         mainAxisAlignment: MainAxisAlignment.center,
-                         children: [
-                           Container(
-                            child: Image.asset('logo.png'),
-                            width: 100,
-                            height: 100,
+                       Container(
+                        child: Image.asset('logo.png'),
+                        width: 100,
+                        height: 100,
                       ),
-                           SizedBox(width: width/2,)
-                         ],
-                       ),
+                       SizedBox(width: width/2,),
                       SizedBox(
                         height: height / 60,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left:16.0),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               "Indus ",
@@ -483,8 +382,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 validateE = true;
                 errortextemail = "Email cannot be empty";
               }
-              if (passwordController.text.isEmpty ||
-                  passwordController.text.trim().length < 6) {
+              if (passwordController.text.isEmpty) {
                 if (passwordController.text.isEmpty)
                   errortextpass = "Password cannot be empty";
                 else
@@ -494,10 +392,92 @@ class _LoginScreenState extends State<LoginScreen> {
                 validateP = false;
 
               if (validateE == false && validateP == false)
-                check().then((value) {
-                  if (value)
+                check().then((value) async {
+                  if (value) {
+                    setState(() {
+                      loading = true;
+                    });
+                 CommonFunctionsState.response = await CommonFunctionsState.loginapicall(
+                        emailController.text, passwordController.text);
+                    if (CommonFunctionsState.response.statusCode  == 200)
+                    {
+                      csrftoken=CommonFunctionsState.response .headers["x-csrf-token"];
+                      print("headers:  ${CommonFunctionsState.response .headers["x-csrf-token"]}");
+                      print("headers:  ${CommonFunctionsState.response .headers["content-type"]}");
+                      print("headers:  ${CommonFunctionsState.response .headers["sap-processing-info"]}");
+                      li = LoginResponse.fromJson(json.decode(CommonFunctionsState.response .body));
+                      setState(() {
+                        loading = false;
+                      });
+                      print(li.d.results[0].success);
+                      if (li.d.results[0].success)
+                      {
+                        // print(li.d.results[0].message);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  Page1()),
+                        );
+                        showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content:
+                                Text(li.d.results[0].message ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text('OK'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            });
 
-                    apicall();
+                      } else
+                        showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content:
+                                Text(li.d.results[0].message ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text('OK'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            });
+
+                      // showDialog(
+                      //     context: context,
+                      //     builder:(_) =>AlertDialog(
+                      //       title: Text(
+                      //         li.alert,
+                      //         style: TextStyle(color: Colors.red),
+                      //
+                      //       ),
+                      //       content:Text(
+                      //           li.alert,
+                      //           style: TextStyle(color: Colors.red),)
+                      //     ));
+
+                    } else {
+                      setState(() {
+                        loading = false;
+                      });
+                      print("Retry");
+                    }
+
+
+                  }
                   // Navigator.pushReplacement(
                   //   context,
                   //   MaterialPageRoute(
