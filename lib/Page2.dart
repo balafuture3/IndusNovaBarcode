@@ -98,6 +98,9 @@ class Page1State extends State<Page1> {
       'Authorization': basicAuth,
       "x-csrf-token": LoginScreenState.csrftoken,
       "Content-Type": "application/json",
+      "cookie":"SAP_SESSIONID_MSD_310=oBIpdOjuE0KVfHcV5g0uTM1FpJNobxHriECAGETqkPw%3d"
+
+      // LoginScreenState.cookie.substring(0, LoginScreenState.cookie.indexOf(';'))
     };
     url = "http://27.100.26.22:44303/sap/opu/odata/sap/ZWMPICKPACK_SRV/ZC_PackUpdate";
 

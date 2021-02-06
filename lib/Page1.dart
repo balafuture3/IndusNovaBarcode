@@ -79,7 +79,7 @@ print(LoginScreenState.csrftoken);
     setState(() {
       loading = true;
     });
-    CommonFunctionsState.loginapicall("ADMIN","Admin").then((value) async {
+     CommonFunctionsState.loginapicall(LoginScreenState.emailController.text,LoginScreenState.passwordController.text).then((value) async {
       String username = 'mobileuser';
       String password = 'sap@1234';
       String basicAuth =
@@ -94,18 +94,19 @@ print(LoginScreenState.csrftoken);
         "GrossWeight": "20"
       };
       var body = json.encode(data);
+      print("body:$body");
       Map<String, String> headers = {
         "Accept": "application/json",
         'Authorization': basicAuth,
         "x-csrf-token": LoginScreenState.csrftoken,
-
+        "cookie":LoginScreenState.cookie,
         "Content-Type": "application/json",
       };
       url =
       "http://27.100.26.22:44303/sap/opu/odata/sap/ZWMPICKPACK_SRV/ZC_PackUpdate";
 
       print(url);
-      print(headers);
+      print("Headers $headers");
       var response = await http.post(url,
           headers: headers, body: body);
 
@@ -115,12 +116,11 @@ print(LoginScreenState.csrftoken);
       setState(() {
         loading = false;
       });
-      print("Retry");
-
       print("response: ${response.statusCode}");
       print("response: ${response.body}");
       return response;
-    });
+     }
+     );
   }
   String _scanBarcode;
   TextEditingController BarcodeController = new TextEditingController();

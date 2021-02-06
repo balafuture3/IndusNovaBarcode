@@ -25,6 +25,7 @@ class CommonFunctionsState extends State<CommonFunctions> {
       "Accept": "application/json",
       'Authorization': basicAuth,
       "x-csrf-token": "fetch",
+      "Connection": "keep-alive",
     };
     url = "http://27.100.26.22:44303/sap/opu/odata/sap/ZWMPICKPACK_SRV/ZC_WMUser?\$filter=(UserName eq '$user' and Password eq '$pass')";
 
@@ -35,8 +36,9 @@ class CommonFunctionsState extends State<CommonFunctions> {
     print(response.body);
     if (response.statusCode  == 200) {
       LoginScreenState.csrftoken = CommonFunctionsState.response.headers["x-csrf-token"];
-      LoginScreenState.cookie = CommonFunctionsState.response.headers["Cookie"];
-      print(LoginScreenState.cookie);
+      LoginScreenState.cookie = CommonFunctionsState.response.headers["set-cookie"].split(';')[1].replaceAll("path=/,", "");
+      print("cookie:${LoginScreenState.cookie}");
+          // .cookie.split(';')[0]}");
     }
     return response;
 
