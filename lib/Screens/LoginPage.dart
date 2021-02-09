@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:packingvsdispatch/CommonFunctions/CommonFunctions.dart';
 import 'package:packingvsdispatch/Model/LoginResponse.dart';
-import 'package:packingvsdispatch/Page1.dart';
+import 'package:packingvsdispatch/Screens/Dashboard.dart';
+import 'package:packingvsdispatch/Screens/Packing.dart';
 import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
-  LoginResponse li;
+  LoginResponseList li;
 static String csrftoken;
 
   static String cookie;
@@ -405,55 +406,163 @@ static String csrftoken;
                       print("headers:  ${CommonFunctionsState.response .headers["x-csrf-token"]}");
                       print("headers:  ${CommonFunctionsState.response .headers["content-type"]}");
                       print("headers:  ${CommonFunctionsState.response .headers["sap-processing-info"]}");
-                      li = LoginResponse.fromJson(json.decode(CommonFunctionsState.response .body));
+                      li = LoginResponseList.fromJson(json.decode(CommonFunctionsState.response .body));
                       setState(() {
                         loading = false;
                       });
-                      print(li.d.results[0].success);
-                      if (li.d.results[0].success)
+                      print(li.details[0].success);
+                      if (li.details[0].success=="X")
                       {
                         // print(li.d.results[0].message);
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  Page1()),
+                                  Dashboard()),
                         );
-                        showDialog<void>(
-                            context: context,
-                            barrierDismissible: false, // user must tap button!
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                content:
-                                Text(li.d.results[0].message ),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text('OK'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              );
-                            });
+                      showDialog<void>(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) {
+                      return AlertDialog(
+                      backgroundColor: Colors.white.withOpacity(0),
+                      title: Container(
+                      decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(50),
+                      bottomRight: Radius.circular(50),
+                      topLeft: Radius.circular(50),
+                      topRight: Radius.circular(50)),
+                      ),
+                      child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                      Container(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Image.asset(
+                      "logo.png",height:  MediaQuery.of(context).size.height/8,
+                      ),
+                      ),
+                      SizedBox(
+                      height: 5,
+                      ),
 
-                      } else
+                        Text(
+                          "Indus Nova Packaging",
+                          style: TextStyle(color: Colors.yellow,fontSize: 18),
+                        ),
+                      SizedBox(
+                      height: 30,
+                      ),
+                      Text(
+                      li.details[0].message.toString(),
+                      style: TextStyle(color: Colors.white,fontSize: 16),
+                      ),
+                      SizedBox(
+                      height: 30,
+                      ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextButton(
+                                child: Text('OK',style: TextStyle(color: Colors.white),textAlign: TextAlign.end,),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+
+                      ),
+                      ),
+
+                      // actions: <Widget>[
+                      //   TextButton(
+                      //     child: Text('OK'),
+                      //     onPressed: () {
+                      //       Navigator.of(context).pop();
+                      //     },
+                      //   ),
+                      // ],
+                      );
+
+                      }); }else
                         showDialog<void>(
                             context: context,
-                            barrierDismissible: false, // user must tap button!
+                            barrierDismissible: true,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                content:
-                                Text(li.d.results[0].message ),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text('OK'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
+                                backgroundColor: Colors.white.withOpacity(0),
+                                title: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue,
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(50),
+                                        bottomRight: Radius.circular(50),
+                                        topLeft: Radius.circular(50),
+                                        topRight: Radius.circular(50)),
                                   ),
-                                ],
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Image.asset(
+                                          "logo.png",height:  MediaQuery.of(context).size.height/8,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+
+                                      Text(
+                                        "Indus Nova Packaging",
+                                        style: TextStyle(color: Colors.yellow,fontSize: 18),
+                                      ),
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      Text(
+                                        li.details[0].message.toString(),
+                                        style: TextStyle(color: Colors.white,fontSize: 16),
+                                      ),
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: TextButton(
+                                              child: Text('OK',style: TextStyle(color: Colors.white),textAlign: TextAlign.end,),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+
+                                  ),
+                                ),
+
+                                // actions: <Widget>[
+                                //   TextButton(
+                                //     child: Text('OK'),
+                                //     onPressed: () {
+                                //       Navigator.of(context).pop();
+                                //     },
+                                //   ),
+                                // ],
                               );
+
                             });
 
                       // showDialog(

@@ -1,100 +1,45 @@
+
+class LoginResponseList {
+  final List<LoginResponse> details;
+
+  LoginResponseList({
+    this.details,
+  });
+
+  factory LoginResponseList.fromJson(
+      List<dynamic> parsedJson) {
+    List<LoginResponse> details =
+    new List<LoginResponse>();
+    details = parsedJson
+        .map((i) => LoginResponse.fromJson(i))
+        .toList();
+
+    return new LoginResponseList(details: details);
+  }
+}
+
+
+
+
+
 class LoginResponse {
-  D d;
-
-  LoginResponse({this.d});
-
-  LoginResponse.fromJson(Map<String, dynamic> json) {
-    d = json['d'] != null ? new D.fromJson(json['d']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.d != null) {
-      data['d'] = this.d.toJson();
-    }
-    return data;
-  }
-}
-
-class D {
-  List<Results> results;
-
-  D({this.results});
-
-  D.fromJson(Map<String, dynamic> json) {
-    if (json['results'] != null) {
-      results = new List<Results>();
-      json['results'].forEach((v) {
-        results.add(new Results.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.results != null) {
-      data['results'] = this.results.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class Results {
-  Metadata mMetadata;
-  String userName;
-  String password;
-  bool success;
+  String user;
+  String success;
   String message;
 
-  Results(
-      {this.mMetadata,
-        this.userName,
-        this.password,
-        this.success,
-        this.message});
+  LoginResponse({this.user, this.success, this.message});
 
-  Results.fromJson(Map<String, dynamic> json) {
-    mMetadata = json['__metadata'] != null
-        ? new Metadata.fromJson(json['__metadata'])
-        : null;
-
-    userName = json['UserName'];
-    password = json['Password'];
+  LoginResponse.fromJson(Map<String, dynamic> json) {
+    user = json['User'];
     success = json['Success'];
     message = json['Message'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.mMetadata != null) {
-      data['__metadata'] = this.mMetadata.toJson();
-    }
-    data['UserName'] = this.userName;
-    data['Password'] = this.password;
+    data['User'] = this.user;
     data['Success'] = this.success;
     data['Message'] = this.message;
-    return data;
-  }
-}
-
-class Metadata {
-  String id;
-  String uri;
-  String type;
-
-  Metadata({this.id, this.uri, this.type});
-
-  Metadata.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    uri = json['uri'];
-    type = json['type'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['uri'] = this.uri;
-    data['type'] = this.type;
     return data;
   }
 }

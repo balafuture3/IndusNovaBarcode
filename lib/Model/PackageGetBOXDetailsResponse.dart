@@ -1,135 +1,94 @@
+
+class PackageGetBOXList {
+  final List<PackageGetBOXDetails> details;
+
+  PackageGetBOXList({
+    this.details,
+  });
+
+  factory PackageGetBOXList.fromJson(
+      List<dynamic> parsedJson) {
+    List<PackageGetBOXDetails> details =
+    new List<PackageGetBOXDetails>();
+    details = parsedJson
+        .map((i) => PackageGetBOXDetails.fromJson(i))
+        .toList();
+
+    return new PackageGetBOXList(details: details);
+  }
+}
+
+
+
 class PackageGetBOXDetails {
-  D d;
-
-  PackageGetBOXDetails({this.d});
-
-  PackageGetBOXDetails.fromJson(Map<String, dynamic> json) {
-    d = json['d'] != null ? new D.fromJson(json['d']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.d != null) {
-      data['d'] = this.d.toJson();
-    }
-    return data;
-  }
-}
-
-class D {
-  List<Results> results;
-
-  D({this.results});
-
-  D.fromJson(Map<String, dynamic> json) {
-    if (json['results'] != null) {
-      results = new List<Results>();
-      json['results'].forEach((v) {
-        results.add(new Results.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.results != null) {
-      data['results'] = this.results.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class Results {
-  Metadata mMetadata;
-  String qPNumber;
-  String postingDate;
-  String packNo;
-  String documentDate;
-  String boxNumber;
+  String qpnumber;
+  String postingdate;
+  String packno;
+  String documentdate;
+  String boxnumber;
   String plant;
   String material;
-  String materialName;
-  String oldMaterial;
-  String stockSegment;
+  String materialname;
+  String oldmaterial;
+  String stocksegment;
   String yield;
-  String confUnit;
-  String qCPending;
+  String confunit;
+  String qcpending;
+  String success;
+  String message;
 
-  Results(
-      {this.mMetadata,
-        this.qPNumber,
-        this.postingDate,
-        this.packNo,
-        this.documentDate,
-        this.boxNumber,
+  PackageGetBOXDetails(
+      {this.qpnumber,
+        this.postingdate,
+        this.packno,
+        this.documentdate,
+        this.boxnumber,
         this.plant,
         this.material,
-        this.materialName,
-        this.oldMaterial,
-        this.stockSegment,
+        this.materialname,
+        this.oldmaterial,
+        this.stocksegment,
         this.yield,
-        this.confUnit,
-        this.qCPending});
+        this.confunit,
+        this.qcpending,
+        this.success,
+        this.message});
 
-  Results.fromJson(Map<String, dynamic> json) {
-    mMetadata = json['__metadata'] != null
-        ? new Metadata.fromJson(json['__metadata'])
-        : null;
-    qPNumber = json['QPNumber'];
-    postingDate = json['PostingDate'];
-    packNo = json['PackNo'];
-    documentDate = json['DocumentDate'];
-    boxNumber = json['BoxNumber'];
+  PackageGetBOXDetails.fromJson(Map<String, dynamic> json) {
+    qpnumber = json['Qpnumber'];
+    postingdate = json['Postingdate'];
+    packno = json['Packno'];
+    documentdate = json['Documentdate'];
+    boxnumber = json['Boxnumber'];
     plant = json['Plant'];
     material = json['Material'];
-    materialName = json['MaterialName'];
-    oldMaterial = json['OldMaterial'];
-    stockSegment = json['StockSegment'];
+    materialname = json['Materialname'];
+    oldmaterial = json['Oldmaterial'];
+    stocksegment = json['Stocksegment'];
     yield = json['Yield'];
-    confUnit = json['ConfUnit'];
-    qCPending = json['QCPending'];
+    confunit = json['Confunit'];
+    qcpending = json['Qcpending'];
+    success = json['Success'];
+    message = json['Message'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.mMetadata != null) {
-      data['__metadata'] = this.mMetadata.toJson();
-    }
-    data['QPNumber'] = this.qPNumber;
-    data['PostingDate'] = this.postingDate;
-    data['PackNo'] = this.packNo;
-    data['DocumentDate'] = this.documentDate;
-    data['BoxNumber'] = this.boxNumber;
+    data['Qpnumber'] = this.qpnumber;
+    data['Postingdate'] = this.postingdate;
+    data['Packno'] = this.packno;
+    data['Documentdate'] = this.documentdate;
+    data['Boxnumber'] = this.boxnumber;
     data['Plant'] = this.plant;
     data['Material'] = this.material;
-    data['MaterialName'] = this.materialName;
-    data['OldMaterial'] = this.oldMaterial;
-    data['StockSegment'] = this.stockSegment;
+    data['Materialname'] = this.materialname;
+    data['Oldmaterial'] = this.oldmaterial;
+    data['Stocksegment'] = this.stocksegment;
     data['Yield'] = this.yield;
-    data['ConfUnit'] = this.confUnit;
-    data['QCPending'] = this.qCPending;
-    return data;
-  }
-}
-
-class Metadata {
-  String id;
-  String uri;
-  String type;
-
-  Metadata({this.id, this.uri, this.type});
-
-  Metadata.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    uri = json['uri'];
-    type = json['type'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['uri'] = this.uri;
-    data['type'] = this.type;
+    data['Confunit'] = this.confunit;
+    data['Qcpending'] = this.qcpending;
+    data['Success'] = this.success;
+    data['Message'] = this.message;
     return data;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:packingvsdispatch/LoginPage.dart';
-import 'package:packingvsdispatch/Page1.dart';
+import 'package:packingvsdispatch/Screens/Dashboard.dart';
+import 'package:packingvsdispatch/Screens/LoginPage.dart';
+import 'package:packingvsdispatch/Screens/Packing.dart';
 
 void main() {
   runApp(MyApp());

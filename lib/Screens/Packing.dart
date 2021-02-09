@@ -6,44 +6,48 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:packingvsdispatch/CommonFunctions/CommonFunctions.dart';
-import 'package:packingvsdispatch/LoginPage.dart';
+import 'package:packingvsdispatch/Screens/Dashboard.dart';
+import 'package:packingvsdispatch/Screens/LoginPage.dart';
 import 'package:packingvsdispatch/Model/PackageGetBOXDetailsResponse.dart';
-class Page1 extends StatefulWidget {
+
+import '../Model/BoxSaveResponse.dart';
+class Packing extends StatefulWidget {
   @override
-  Page1State createState() => Page1State();
+  PackingState createState() => PackingState();
 }
 
-class Page1State extends State<Page1> {
+class PackingState extends State<Packing> {
   bool loading=false;
 
-  PackageGetBOXDetails li;
+  PackageGetBOXList li;
 
   bool datatablevisibility=false;
+
+  BoxSaveResponseList li1;
 
   Future<http.Response> apicall() async {
     setState(() {
       loading = true;
     });
-    String username = 'mobileuser';
-    String password = 'sap@1234';
-    String basicAuth =
-        'Basic ' + base64Encode(utf8.encode('$username:$password'));
-    print(basicAuth);
-print(LoginScreenState.csrftoken);
+//     String username = 'mobileuser';
+//     String password = 'sap@1234';
+//     String basicAuth =
+//         'Basic ' + base64Encode(utf8.encode('$username:$password'));
+//     print(basicAuth);
+// print(LoginScreenState.csrftoken);
     var url;
 
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      'Authorization': basicAuth,
-      // "x-csrf-token": LoginScreenState.csrftoken.toString(),
-      // "Content-Type": "application/json",
-    };
-    url = "http://27.100.26.22:44303//sap/opu/odata/sap/ZWMPICKPACK_SRV/ZC_PACKRTD?\$filter=(BoxNumber eq '${BarcodeController.text}')";
+    // Map<String, String> headers = {
+    //   "Accept": "application/json",
+    //   'Authorization': basicAuth,
+    //   // "x-csrf-token": LoginScreenState.csrftoken.toString(),
+    //   // "Content-Type": "application/json",
+    // };
+    url = "http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/getBoxDetails?box=${BarcodeController.text}";
 
     print(url);
-    print(headers);
-    var response = await http.get(url,
-      headers:headers,);
+    // print(headers);
+    var response = await http.get(url,);
 
 
     print(response.body);
@@ -54,14 +58,14 @@ print(LoginScreenState.csrftoken);
       // int timeInMillis = 1586348737122;
       // var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
       // var formattedDate = DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(timeInMillis));
-      print("headers:  ${response.headers["x-csrf-token"]}");
-      print("headers:  ${response.headers["content-type"]}");
-      print("headers:  ${response.headers["sap-processing-info"]}");
-      li = PackageGetBOXDetails.fromJson(json.decode(response.body));
+      // print("headers:  ${response.headers["x-csrf-token"]}");
+      // print("headers:  ${response.headers["content-type"]}");
+      // print("headers:  ${response.headers["sap-processing-info"]}");
+      li = PackageGetBOXList.fromJson(json.decode(response.body));
       setState(() {
         loading = false;
       });
-      print(li.d.results[0].boxNumber);
+      print(li.details[0].boxnumber);
 
 
     } else {
@@ -79,48 +83,134 @@ print(LoginScreenState.csrftoken);
     setState(() {
       loading = true;
     });
-     CommonFunctionsState.loginapicall(LoginScreenState.emailController.text,LoginScreenState.passwordController.text).then((value) async {
-      String username = 'mobileuser';
-      String password = 'sap@1234';
-      String basicAuth =
-          'Basic ' + base64Encode(utf8.encode('$username:$password'));
-      print(basicAuth);
-      print(LoginScreenState.csrftoken);
+     // CommonFunctionsState.loginapicall(LoginScreenState.emailController.text,LoginScreenState.passwordController.text).then((value) async {
+     //  String username = 'mobileuser';
+     //  String password = 'sap@1234';
+     //  String basicAuth =
+     //      'Basic ' + base64Encode(utf8.encode('$username:$password'));
+     //  print(basicAuth);
+     //  print(LoginScreenState.csrftoken);
       var url;
 
-      Map data = {
-        "BoxNumber": "AG00011097",
-        "Bin": "DUMMY",
-        "GrossWeight": "20"
-      };
-      var body = json.encode(data);
-      print("body:$body");
-      Map<String, String> headers = {
-        "Accept": "application/json",
-        'Authorization': basicAuth,
-        "x-csrf-token": LoginScreenState.csrftoken,
-        "cookie":LoginScreenState.cookie,
-        "Content-Type": "application/json",
-      };
+      // Map data = {
+      //   "BoxNumber": "AG00011097",
+      //   "Bin": "DUMMY",
+      //   "GrossWeight": "20"
+      // };
+      // var body = json.encode(data);
+      // print("body:$body");
+      // Map<String, String> headers = {
+      //   "Accept": "application/json",
+      //   'Authorization': basicAuth,
+      //   "x-csrf-token": LoginScreenState.csrftoken,
+      //   "cookie":LoginScreenState.cookie,
+      //   "Content-Type": "application/json",
+      // };
       url =
-      "http://27.100.26.22:44303/sap/opu/odata/sap/ZWMPICKPACK_SRV/ZC_PackUpdate";
+      "http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/pack?box=${BarcodeController.text}&bin=${BinScanController.text}&grossweight=${RackScanController.text}&user=${LoginScreenState.emailController.text}";
+    // http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/pack?box=AG00011097&bin=DUMMY&grossweight=10&user=ADMIN
 
-      print(url);
-      print("Headers $headers");
-      var response = await http.post(url,
-          headers: headers, body: body);
-
-
-      print(response.body);
+      var response = await http.get(url);
+print(url);
 
       setState(() {
         loading = false;
       });
       print("response: ${response.statusCode}");
       print("response: ${response.body}");
+if(response.statusCode==200) {
+
+  li1=BoxSaveResponseList.fromJson(json.decode(response.body));
+  if (li1.details[0].success=="X") {
+    showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white.withOpacity(0),
+            title: Container(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(50),
+                    bottomRight: Radius.circular(50),
+                    topLeft: Radius.circular(50),
+                    topRight: Radius.circular(50)),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Image.asset(
+                      "logo.png",height:  MediaQuery.of(context).size.height/8,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+
+                  Text(
+                    "Indus Nova Packaging",
+                    style: TextStyle(color: Colors.yellow,fontSize: 18),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Text(
+                    li1.details[0].message.toString(),
+                    style: TextStyle(color: Colors.white,fontSize: 16),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextButton(
+                          child: Text('OK',style: TextStyle(color: Colors.white),textAlign: TextAlign.end,),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+
+              ),
+            ),
+
+            // actions: <Widget>[
+            //   TextButton(
+            //     child: Text('OK'),
+            //     onPressed: () {
+            //       Navigator.of(context).pop();
+            //     },
+            //   ),
+            // ],
+          );
+
+        });
+  }
+  else {
+    showDialog(context: context, child: AlertDialog(
+      content: Column(
+        children: [
+
+          Container(
+            child: Text(li1.details[0].message),
+          ),
+        ],
+      ),
+    ));
+  }
+}
       return response;
-     }
-     );
+
+
   }
   String _scanBarcode;
   TextEditingController BarcodeController = new TextEditingController();
@@ -203,6 +293,7 @@ print(LoginScreenState.csrftoken);
                     padding: const EdgeInsets.only(left:16.0,right:16.0,bottom: 16.0),
                     child: new TextField(
                       controller: RackScanController,
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         labelText: 'Scan Rack',
                         hintStyle: TextStyle(
@@ -519,7 +610,7 @@ print(LoginScreenState.csrftoken);
                                   // }
                                 ),
                               ],
-                              rows:li.d.results
+                              rows:li.details
                                   .map(
                                     (list) => DataRow(cells: [
                                   DataCell(Center(
@@ -529,7 +620,7 @@ print(LoginScreenState.csrftoken);
                                             alignment: WrapAlignment.center,
                                             children: [
                                               Text(
-                                                list.qPNumber.toString(),
+                                                list.qpnumber.toString(),
                                                 textAlign: TextAlign.center,
                                               )
                                             ]),
@@ -541,7 +632,7 @@ print(LoginScreenState.csrftoken);
                                             alignment: WrapAlignment.center,
                                             children: [
                                               Text(
-                                                  DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(int.parse(list.postingDate.replaceAll("/Date(", "").replaceAll(")/", ""))))
+                                                  DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(int.parse(list.postingdate.replaceAll(".", "").replaceAll("/Date(", "").replaceAll(")/", ""))))
                                                   ,
                                                   textAlign: TextAlign.center)
                                             ]),
@@ -553,7 +644,7 @@ print(LoginScreenState.csrftoken);
                                                 direction: Axis.vertical, //default
                                                 alignment: WrapAlignment.center,
                                                 children: [
-                                                  Text(list.packNo.toString(),
+                                                  Text(list.packno.toString(),
                                                       textAlign: TextAlign.center)
                                                 ]))),
                                   ),
@@ -564,7 +655,7 @@ print(LoginScreenState.csrftoken);
                                                 direction: Axis.vertical, //default
                                                 alignment: WrapAlignment.center,
                                                 children: [
-                                                  Text(DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(int.parse(list.documentDate.replaceAll("/Date(", "").replaceAll(")/", ""))))
+                                                  Text(DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(int.parse(list.documentdate.replaceAll("/Date(", "").replaceAll(")/", ""))))
                                                       ,textAlign: TextAlign.center)
                                                 ]))),
                                   ),
@@ -575,7 +666,7 @@ print(LoginScreenState.csrftoken);
                                                 direction: Axis.vertical, //default
                                                 alignment: WrapAlignment.center,
                                                 children: [
-                                                  Text(list.boxNumber.toString(),
+                                                  Text(list.boxnumber.toString(),
                                                       textAlign: TextAlign.center)
                                                 ]))),
                                   ),
@@ -609,7 +700,7 @@ print(LoginScreenState.csrftoken);
                                             alignment: WrapAlignment.center,
                                             children: [
                                               Text(
-                                                  list.materialName.toString() ,
+                                                  list.materialname.toString() ,
                                                   textAlign: TextAlign.center)
                                             ]),
                                       ))),
@@ -620,7 +711,7 @@ print(LoginScreenState.csrftoken);
                                                 direction: Axis.vertical, //default
                                                 alignment: WrapAlignment.center,
                                                 children: [
-                                                  Text(list.oldMaterial.toString(),
+                                                  Text(list.oldmaterial.toString(),
                                                       textAlign: TextAlign.center)
                                                 ]))),
                                   ),
@@ -631,7 +722,7 @@ print(LoginScreenState.csrftoken);
                                                 direction: Axis.vertical, //default
                                                 alignment: WrapAlignment.center,
                                                 children: [
-                                                  Text(list.stockSegment.toString(),textAlign: TextAlign.center)
+                                                  Text(list.stocksegment.toString(),textAlign: TextAlign.center)
                                                 ]))),
                                   ),
                                   DataCell(
@@ -652,7 +743,7 @@ print(LoginScreenState.csrftoken);
                                                 direction: Axis.vertical, //default
                                                 alignment: WrapAlignment.center,
                                                 children: [
-                                                  Text(list.confUnit.toString(),
+                                                  Text(list.confunit.toString(),
                                                       textAlign: TextAlign.center)
                                                 ]))),
                                   ),
@@ -663,7 +754,7 @@ print(LoginScreenState.csrftoken);
                                                 direction: Axis.vertical, //default
                                                 alignment: WrapAlignment.center,
                                                 children: [
-                                                  Text(list.qCPending.toString(),
+                                                  Text(list.qcpending.toString(),
                                                       textAlign: TextAlign.center)
                                                 ]))),
                                   ),
@@ -765,7 +856,10 @@ print(LoginScreenState.csrftoken);
                               borderRadius:
                               BorderRadius.all(Radius.circular(50))),
                           child: FlatButton(
-                            onPressed: () {},
+                            onPressed: () {
+
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Dashboard()));
+                            },
                             child: Text(
                               "Cancel",
                               style: TextStyle(color: Colors.white),
@@ -784,16 +878,8 @@ print(LoginScreenState.csrftoken);
     ):Center(child: CircularProgressIndicator()),
       ),
       appBar: AppBar(
-        title: Row(
-          children: [
-            Container(
-              child: Image.asset('logo.png'),
-              width: 50,
-              height: 50,
-            ),
-            Text("Indus Nova Packaging"),
-          ],
-        ),
+        title:
+            Text("Packaging"),
     ),
     );
 
