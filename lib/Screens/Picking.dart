@@ -3,9 +3,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:packingvsdispatch/CommonFunctions/CommonFunctions.dart';
+import 'package:packingvsdispatch/Model/Get%20OBD.dart';
 import 'package:packingvsdispatch/Screens/Dashboard.dart';
 import 'package:packingvsdispatch/Screens/LoginPage.dart';
 import 'package:packingvsdispatch/Model/PackageGetBOXDetailsResponse.dart';
@@ -22,8 +24,10 @@ class PickingState extends State<Picking> {
   PackageGetBOXList li;
 
   bool datatablevisibility=false;
-
+  final TextEditingController _typeAheadController = TextEditingController();
   BoxSaveResponseList li1;
+
+  static GetOBDList li3;
 
   Future<http.Response> apicall() async {
     setState(() {
@@ -78,7 +82,59 @@ class PickingState extends State<Picking> {
     print("response: ${response.body}");
     return response;
   }
+  Future<http.Response> listcall() async {
+    setState(() {
+      loading = true;
+    });
+//     String username = 'mobileuser';
+//     String password = 'sap@1234';
+//     String basicAuth =
+//         'Basic ' + base64Encode(utf8.encode('$username:$password'));
+//     print(basicAuth);
+// print(LoginScreenState.csrftoken);
+    var url;
 
+    // Map<String, String> headers = {
+    //   "Accept": "application/json",
+    //   'Authorization': basicAuth,
+    //   // "x-csrf-token": LoginScreenState.csrftoken.toString(),
+    //   // "Content-Type": "application/json",
+    // };
+    url = "http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/getOBDlist";
+
+    print(url);
+    // print(headers);
+    var response = await http.get(url,);
+
+
+    print(response.body);
+
+    if (response.statusCode == 200)
+    {
+      datatablevisibility=true;
+      // int timeInMillis = 1586348737122;
+      // var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
+      // var formattedDate = DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(timeInMillis));
+      // print("headers:  ${response.headers["x-csrf-token"]}");
+      // print("headers:  ${response.headers["content-type"]}");
+      // print("headers:  ${response.headers["sap-processing-info"]}");
+      li3 = GetOBDList.fromJson(json.decode(response.body));
+      setState(() {
+        loading = false;
+      });
+     
+
+
+    } else {
+      setState(() {
+        loading = false;
+      });
+      print("Retry");
+    }
+    print("response: ${response.statusCode}");
+    print("response: ${response.body}");
+    return response;
+  }
   Future<http.Response> saveapicall() async {
     setState(() {
       loading = true;
@@ -217,6 +273,16 @@ class PickingState extends State<Picking> {
   TextEditingController OutboundController = new TextEditingController();
   TextEditingController RackScanController = new TextEditingController();
   TextEditingController BinScanController = new TextEditingController();
+  TextEditingController CustomerNameController = new TextEditingController();
+  TextEditingController CustomerCodeController = new TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    listcall();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -269,6 +335,93 @@ class PickingState extends State<Picking> {
               child:
               Column(
                 children: [
+
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16.0,top:16),
+                    child: TypeAheadFormField(
+                      textFieldConfiguration: TextFieldConfiguration(
+                        enabled: true,
+                        controller: this._typeAheadController,
+                        // onTap: ()
+                        // {
+                        //   Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //           builder: (context) =>
+                        //               Category(userid:HomeState.userid,mapselection: true)));
+                        // },
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.search),
+                          labelText: 'Customer Name',
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16.0,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                        ),
+                      ),
+                      suggestionsCallback: (pattern) {
+                        return BackendService.getSuggestions(pattern);
+                      },
+                      itemBuilder: (context, suggestion) {
+                        return ListTile(
+                          title: Text(suggestion),
+                        );
+                      },
+                      transitionBuilder: (context, suggestionsBox, controller) {
+                        return suggestionsBox;
+                      },
+                      onSuggestionSelected: (suggestion) {
+                        // postRequest(suggestion);
+                        for (int i = 0;
+                        i < li3.details.length;
+                        i++) {
+                          print(li3.details[i].customername);
+                          if ("${li3.details[i].customername}-${li3.details[i].customer}" ==
+                              suggestion)
+                          {
+                          CustomerCodeController.text=li3.details[i].customer;
+                          OutboundController.text=li3.details[i].delivery;
+
+                          }
+                        }
+                        this._typeAheadController.text = suggestion;
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please select a city';
+                        } else
+                          return 'nothing';
+                      },
+                      // onSaved: (value) => this._selectedCity = value,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top:16.0,left: 16,right: 16),
+                    child: new TextField(
+                      enabled: false,
+                      onSubmitted: (value){
+                        apicall();
+
+                      },
+
+                      controller: CustomerCodeController,
+                      decoration: InputDecoration(
+                        labelText: 'Customer Code',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16.0,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                      ),
+                    ),
+                  ),
+
                   Padding(
                     padding: const EdgeInsets.only(top:16.0,left: 16,right: 16),
                     child: new TextField(
@@ -276,6 +429,7 @@ class PickingState extends State<Picking> {
                         apicall();
 
                       },
+                      enabled: false,
 
                       controller: OutboundController,
                       decoration: InputDecoration(
@@ -293,6 +447,7 @@ class PickingState extends State<Picking> {
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: new TextField(
+
                       // onSubmitted: (value){
                       //   apicall();
                       //
@@ -300,7 +455,7 @@ class PickingState extends State<Picking> {
 
                       controller: BarcodeController,
                       decoration: InputDecoration(
-                        labelText: 'Package Slip Bar Code',
+                        labelText: 'Matl. Identification Slip',
                         hintStyle: TextStyle(
                           color: Colors.grey,
                           fontSize: 16.0,
@@ -311,29 +466,31 @@ class PickingState extends State<Picking> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left:16.0,right:16.0,bottom: 16.0),
-                    child: new TextField(
-                      controller: RackScanController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: 'Scan Rack',
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16.0,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                      ),
-                    ),
-                  ),
+
                   Padding(
                     padding: const EdgeInsets.only(left:16.0,right:16.0,bottom: 16.0),
                     child: new TextField(
                       controller: BinScanController,
                       decoration: InputDecoration(
                         labelText: 'Scan Bin',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16.0,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left:16.0,right:16.0,bottom: 16.0),
+                    child: new TextField(
+                      enabled: false,
+                      controller: RackScanController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: 'Box Weight',
                         hintStyle: TextStyle(
                           color: Colors.grey,
                           fontSize: 16.0,
@@ -481,10 +638,28 @@ class PickingState extends State<Picking> {
       ),
       appBar: AppBar(
         title:
-            Text("Picking"),
+            Text("Box Picking list"),
 
       ),
     );
+
+  }
+}
+class BackendService {
+
+
+  static Future<List> getSuggestions(String query) async {
+    List<String> s = new List();
+    if (PickingState.li3.details.length == 0) {
+      // return ["No details"];
+    } else {
+      for(int i=0;i<PickingState.li3.details.length;i++)
+        if(PickingState.li3.details[i].customername.toLowerCase().contains(query.toLowerCase())||PickingState.li3.details[i].customer.toLowerCase().contains(query.toLowerCase()))
+        s.add("${PickingState.li3.details[i].customername}-${PickingState.li3.details[i].customer}");
+        return s;
+    }
+
+
 
   }
 }

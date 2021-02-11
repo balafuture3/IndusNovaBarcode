@@ -54,7 +54,7 @@ class PackingState extends State<Packing> {
 
     if (response.statusCode == 200)
     {
-      datatablevisibility=true;
+      // datatablevisibility=true;
       // int timeInMillis = 1586348737122;
       // var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
       // var formattedDate = DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(timeInMillis));
@@ -62,11 +62,19 @@ class PackingState extends State<Packing> {
       // print("headers:  ${response.headers["content-type"]}");
       // print("headers:  ${response.headers["sap-processing-info"]}");
       li = PackageGetBOXList.fromJson(json.decode(response.body));
+      datatablevisibility=true;
+      if (li.details[0].success=="X")
+      {
+        setState(() {
+          loading = false;
+        });
+        print(li.details[0].boxnumber);
+        datatablevisibility=true;
+        RackScanController.text= li.details[0].grossweight.toString();
+      }
       setState(() {
         loading = false;
       });
-      print(li.details[0].boxnumber);
-
 
     } else {
       setState(() {
@@ -138,7 +146,7 @@ if(response.statusCode==200) {
                     topRight: Radius.circular(50)),
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
                     padding: const EdgeInsets.all(16.0),
@@ -168,7 +176,7 @@ if(response.statusCode==200) {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(left:24.0,right:24,top:10,bottom: 10),
                         child: TextButton(
                           child: Text('OK',style: TextStyle(color: Colors.white),textAlign: TextAlign.end,),
                           onPressed: () {
@@ -292,10 +300,9 @@ if(response.statusCode==200) {
                   Padding(
                     padding: const EdgeInsets.only(left:16.0,right:16.0,bottom: 16.0),
                     child: new TextField(
-                      controller: RackScanController,
-                      keyboardType: TextInputType.number,
+                      controller: BinScanController,
                       decoration: InputDecoration(
-                        labelText: 'Scan Rack',
+                        labelText: 'Scan Bin',
                         hintStyle: TextStyle(
                           color: Colors.grey,
                           fontSize: 16.0,
@@ -309,9 +316,16 @@ if(response.statusCode==200) {
                   Padding(
                     padding: const EdgeInsets.only(left:16.0,right:16.0,bottom: 16.0),
                     child: new TextField(
-                      controller: BinScanController,
+                      onSubmitted:(value) {
+                        setState(() {
+                          li.details[0].grossweight=RackScanController.text;
+                        });
+
+                      },
+                      controller: RackScanController,
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        labelText: 'Scan Bin',
+                        labelText: 'Box Weight',
                         hintStyle: TextStyle(
                           color: Colors.grey,
                           fontSize: 16.0,
@@ -327,446 +341,371 @@ if(response.statusCode==200) {
                     child:  li!=null?ExpansionTile(
                       initiallyExpanded: true,
                       title: Text("Package Details"),
-                      children: [SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                              headingRowColor:
-                              MaterialStateColor.resolveWith((states) => Colors.blue),
+                      children: [
 
-                              columns: [
-                                DataColumn(
-                                  label: Center(
-                                      child: Wrap(
+                        li.details[0].success=="X"?
+                        Container(
+                          height:height/2,
+                          child: ListView(
+
+
+                              children: [
+
+                                Row(
+
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.only(left:24.0,right:24,top:10,bottom: 10),
+                                      child: Text(
+                                        "QP Number:",
+                                        softWrap: true,
+                                        style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Wrap(
                                         direction: Axis.vertical, //default
                                         alignment: WrapAlignment.center,
                                         children: [
-                                          Text(
-                                            "QP Number",
-                                            softWrap: true,
-                                            style: TextStyle(fontSize: 12),
+                                          Padding(
+                                              padding: const EdgeInsets.only(right:24.0),
+                                              child: Text(
+                                            li.details[0].qpnumber.toString(),
                                             textAlign: TextAlign.center,
-                                          ),
-                                        ],
-                                      )),
-                                  numeric: false,
-
-                                  // onSort: (columnIndex, ascending) {
-                                  //   onSortColum(columnIndex, ascending);
-                                  //   setState(() {
-                                  //     sort = !sort;
-                                  //   });
-                                  // }
+                                            style: TextStyle(color:Colors.indigo,fontWeight: FontWeight.w600),
+                                          ))
+                                        ]),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween
                                 ),
-                                DataColumn(
-                                  label: Center(
-                                      child: Wrap(
+                                Row(
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.only(left:24.0,right:24,top:10,bottom: 10),
+                                      child: Text(
+                                        "Posting Date:",
+                                        softWrap: true,
+                                        style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Wrap(
                                         direction: Axis.vertical, //default
                                         alignment: WrapAlignment.center,
                                         children: [
-                                          Text("Posting Date",
-                                              softWrap: true,
-                                              style: TextStyle(fontSize: 12),
-                                              textAlign: TextAlign.center),
-                                        ],
-                                      )),
-                                  numeric: false,
-
-                                  // onSort: (columnIndex, ascending) {
-                                  //   onSortColum(columnIndex, ascending);
-                                  //   setState(() {
-                                  //     sort = !sort;
-                                  //   });
-                                  // }
+                                          Padding(
+                                              padding: const EdgeInsets.only(right:24.0),
+                                              child:  Text(
+                                            li.details[0].postingdate.toString(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(color:Colors.indigo,fontWeight: FontWeight.w600),
+                                          ))
+                                        ]),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween
                                 ),
-                                DataColumn(
-                                  label: Center(
-                                      child: Wrap(
+                                Row(
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.only(left:24.0,right:24,top:10,bottom: 10),
+                                      child: Text(
+                                        "Pack No:",
+                                        softWrap: true,
+                                        style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Wrap(
                                         direction: Axis.vertical, //default
                                         alignment: WrapAlignment.center,
                                         children: [
-                                          Text("Pack No",
-                                              softWrap: true,
-                                              style: TextStyle(fontSize: 12),
-                                              textAlign: TextAlign.center),
-                                        ],
-                                      )),
-                                  numeric: false,
-
-                                  // onSort: (columnIndex, ascending) {
-                                  //   onSortColum(columnIndex, ascending);
-                                  //   setState(() {
-                                  //     sort = !sort;
-                                  //   });
-                                  // }
+                                          Padding(
+                                              padding: const EdgeInsets.only(right:24.0),
+                                              child: Text(
+                                            li.details[0].packno.toString(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(color:Colors.indigo,fontWeight: FontWeight.w600),
+                                          ))
+                                        ]),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween
                                 ),
-                                DataColumn(
-                                  label: Center(
-                                      child: Wrap(
+                                Row(
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.only(left:24.0,right:24,top:10,bottom: 10),
+                                      child: Text(
+                                        "Doc Date:",
+                                        softWrap: true,
+                                        style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Wrap(
                                         direction: Axis.vertical, //default
                                         alignment: WrapAlignment.center,
                                         children: [
-                                          Text("Doc Date",
-                                              softWrap: true,
-                                              style: TextStyle(fontSize: 12),
-                                              textAlign: TextAlign.center),
-                                        ],
-                                      )),
-                                  numeric: false,
-
-                                  // onSort: (columnIndex, ascending) {
-                                  //   onSortColum(columnIndex, ascending);
-                                  //   setState(() {
-                                  //     sort = !sort;
-                                  //   });
-                                  // }
+                                          Padding(
+                                              padding: const EdgeInsets.only(right:24.0),
+                                              child:  Text(
+                                            li.details[0].documentdate.toString(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(color:Colors.indigo,fontWeight: FontWeight.w600),
+                                          ))
+                                        ]),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween
                                 ),
-                                DataColumn(
-                                  label: Center(
-                                      child: Wrap(
+                                Row(
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.only(left:24.0,right:24,top:10,bottom: 10),
+                                      child: Text(
+                                        "Box Number:",
+                                        softWrap: true,
+                                        style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Wrap(
                                         direction: Axis.vertical, //default
                                         alignment: WrapAlignment.center,
                                         children: [
-                                          Text("Box Number",
-                                              softWrap: true,
-                                              style: TextStyle(fontSize: 12),
-                                              textAlign: TextAlign.center),
-                                        ],
-                                      )),
-                                  numeric: false,
-
-                                  // onSort: (columnIndex, ascending) {
-                                  //   onSortColum(columnIndex, ascending);
-                                  //   setState(() {
-                                  //     sort = !sort;
-                                  //   });
-                                  // }
+                                          Padding(
+                                              padding: const EdgeInsets.only(right:24.0),
+                                              child: Text(
+                                            li.details[0].boxnumber.toString(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(color:Colors.indigo,fontWeight: FontWeight.w600),
+                                          ))
+                                        ]),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween
                                 ),
-                                DataColumn(
-                                  label: Center(
-                                      child: Wrap(
+                                Row(
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.only(left:24.0,right:24,top:10,bottom: 10),
+                                      child: Text(
+                                        "Plant:",
+                                        softWrap: true,
+                                        style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Wrap(
                                         direction: Axis.vertical, //default
                                         alignment: WrapAlignment.center,
                                         children: [
-                                          Text("Plant",
-                                              softWrap: true,
-                                              style: TextStyle(fontSize: 12),
-                                              textAlign: TextAlign.center),
-                                        ],
-                                      )),
-                                  numeric: false,
-
-                                  // onSort: (columnIndex, ascending) {
-                                  //   onSortColum(columnIndex, ascending);
-                                  //   setState(() {
-                                  //     sort = !sort;
-                                  //   });
-                                  // }
+                                          Padding(
+                                              padding: const EdgeInsets.only(right:24.0),
+                                              child: Text(
+                                            li.details[0].plant.toString(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(color:Colors.indigo,fontWeight: FontWeight.w600),
+                                          ))
+                                        ]),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween
                                 ),
-                                DataColumn(
-                                  label: Center(
-                                      child: Wrap(
+                                Row(
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.only(left:24.0,right:24,top:10,bottom: 10),
+                                      child: Text(
+                                        "Material:",
+                                        softWrap: true,
+                                        style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Wrap(
                                         direction: Axis.vertical, //default
                                         alignment: WrapAlignment.center,
                                         children: [
-                                          Text("Material",
-                                              softWrap: true,
-                                              style: TextStyle(fontSize: 12),
-                                              textAlign: TextAlign.center),
-                                        ],
-                                      )),
-                                  numeric: false,
-
-                                  // onSort: (columnIndex, ascending) {
-                                  //   onSortColum(columnIndex, ascending);
-                                  //   setState(() {
-                                  //     sort = !sort;
-                                  //   });
-                                  // }
+                                          Padding(
+                                              padding: const EdgeInsets.only(right:24.0),
+                                              child: Text(
+                                            li.details[0].material.toString(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(color:Colors.indigo,fontWeight: FontWeight.w600),
+                                          ))
+                                        ]),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween
                                 ),
-                                DataColumn(
-                                  label: Center(
-                                      child: Wrap(
+                                Row(
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.only(left:24.0,right:24,top:10,bottom: 10),
+                                      child: Text(
+                                        "Material Description:",
+                                        softWrap: true,
+                                        style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Wrap(
                                         direction: Axis.vertical, //default
                                         alignment: WrapAlignment.center,
                                         children: [
-                                          Text("Material Description",
-                                              softWrap: true,
-                                              style: TextStyle(fontSize: 12),
-                                              textAlign: TextAlign.center),
-                                        ],
-                                      )),
-                                  numeric: false,
-
-                                  // onSort: (columnIndex, ascending) {
-                                  //   onSortColum(columnIndex, ascending);
-                                  //   setState(() {
-                                  //     sort = !sort;
-                                  //   });
-                                  // }
+                                          Padding(
+                                              padding: const EdgeInsets.only(right:24.0),
+                                              child: Text(
+                                            li.details[0].materialname.toString(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(color:Colors.indigo,fontWeight: FontWeight.w600),
+                                          ))
+                                        ]),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween
                                 ),
-                                DataColumn(
-                                  label: Center(
-                                      child: Wrap(
+                                Row(
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.only(left:24.0,right:24,top:10,bottom: 10),
+                                      child: Text(
+                                        "Old Material:",
+                                        softWrap: true,
+                                        style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Wrap(
                                         direction: Axis.vertical, //default
                                         alignment: WrapAlignment.center,
                                         children: [
-                                          Text("Old Material",
-                                              softWrap: true,
-                                              style: TextStyle(fontSize: 12),
-                                              textAlign: TextAlign.center),
-                                        ],
-                                      )),
-                                  numeric: false,
-
-                                  // onSort: (columnIndex, ascending) {
-                                  //   onSortColum(columnIndex, ascending);
-                                  //   setState(() {
-                                  //     sort = !sort;
-                                  //   });
-                                  // }
+                                          Padding(
+                                              padding: const EdgeInsets.only(right:24.0),
+                                              child: Text(
+                                            li.details[0].oldmaterial.toString(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(color:Colors.indigo,fontWeight: FontWeight.w600),
+                                          ))
+                                        ]),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween
                                 ),
-                                DataColumn(
-                                  label: Center(
-                                      child: Wrap(
+                                Row(
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.only(left:24.0,right:24,top:10,bottom: 10),
+                                      child: Text(
+                                        "Stock Seg:",
+                                        softWrap: true,
+                                        style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Wrap(
                                         direction: Axis.vertical, //default
                                         alignment: WrapAlignment.center,
                                         children: [
-                                          Text("Stock Seg",
-                                              softWrap: true,
-                                              style: TextStyle(fontSize: 12),
-                                              textAlign: TextAlign.center),
-                                        ],
-                                      )),
-                                  numeric: false,
-
-                                  // onSort: (columnIndex, ascending) {
-                                  //   onSortColum(columnIndex, ascending);
-                                  //   setState(() {
-                                  //     sort = !sort;
-                                  //   });
-                                  // }
+                                          Padding(
+                                              padding: const EdgeInsets.only(right:24.0),
+                                              child: Text(
+                                            li.details[0].stocksegment.toString(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(color:Colors.indigo,fontWeight: FontWeight.w600),
+                                          ))
+                                        ]),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween
                                 ),
-                                DataColumn(
-                                  label: Center(
-                                      child: Wrap(
+                                Row(
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.only(left:24.0,right:24,top:10,bottom: 10),
+                                      child: Text(
+                                        "Yield:",
+                                        softWrap: true,
+                                        style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Wrap(
                                         direction: Axis.vertical, //default
                                         alignment: WrapAlignment.center,
                                         children: [
-                                          Text("Yield",
-                                              softWrap: true,
-                                              style: TextStyle(fontSize: 12),
-                                              textAlign: TextAlign.center),
-                                        ],
-                                      )),
-                                  numeric: false,
-
-                                  // onSort: (columnIndex, ascending) {
-                                  //   onSortColum(columnIndex, ascending);
-                                  //   setState(() {
-                                  //     sort = !sort;
-                                  //   });
-                                  // }
+                                          Padding(
+                                              padding: const EdgeInsets.only(right:24.0),
+                                              child: Text(
+                                            li.details[0].yield.toString(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(color:Colors.indigo,fontWeight: FontWeight.w600),
+                                          ))
+                                        ]),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween
                                 ),
-                                DataColumn(
-                                  label: Center(
-                                      child: Wrap(
+                                Row(
+                                  children: [
+                                    Padding(
+                                        padding: const EdgeInsets.only(left:24.0,right:24,top:10,bottom: 10),
+                                      child: Text(
+                                        "Conf.Unit:",
+                                        softWrap: true,
+                                        style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Wrap(
                                         direction: Axis.vertical, //default
                                         alignment: WrapAlignment.center,
                                         children: [
-                                          Text("Conf.Unit",
-                                              softWrap: true,
-                                              style: TextStyle(fontSize: 12),
-                                              textAlign: TextAlign.center),
-                                        ],
-                                      )),
-                                  numeric: false,
-
-                                  // onSort: (columnIndex, ascending) {
-                                  //   onSortColum(columnIndex, ascending);
-                                  //   setState(() {
-                                  //     sort = !sort;
-                                  //   });
-                                  // }
+                                          Padding(
+                                            padding: const EdgeInsets.only(right:24.0),
+                                            child: Text(
+                                              li.details[0].confunit.toString(),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(color:Colors.indigo,fontWeight: FontWeight.w600),
+                                            ),
+                                          )
+                                        ]),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween
                                 ),
-                                DataColumn(
-                                  label: Center(
-                                      child: Wrap(
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left:24.0,right:24,top:10,bottom: 10),
+                                      child: Text(
+                                        "Box Weight:",
+                                        softWrap: true,
+                                        style:   TextStyle(fontSize: 15,fontWeight: FontWeight.w600),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    Wrap(
                                         direction: Axis.vertical, //default
                                         alignment: WrapAlignment.center,
                                         children: [
-                                          Text("Quan",
-                                              softWrap: true,
-                                              style: TextStyle(fontSize: 12),
-                                              textAlign: TextAlign.center),
-                                        ],
-                                      )),
-                                  numeric: false,
-
-                                  // onSort: (columnIndex, ascending) {
-                                  //   onSortColum(columnIndex, ascending);
-                                  //   setState(() {
-                                  //     sort = !sort;
-                                  //   });
-                                  // }
+                                          Padding(
+                                              padding: const EdgeInsets.only(right:24.0),
+                                              child: Text(
+                                            li.details[0].grossweight.toString(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(color:Colors.indigo,fontWeight: FontWeight.w600),
+                                              )  )
+                                        ]),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween
                                 ),
+
                               ],
-                              rows:li.details
-                                  .map(
-                                    (list) => DataRow(cells: [
-                                  DataCell(Center(
-                                      child: Center(
-                                        child: Wrap(
-                                            direction: Axis.vertical, //default
-                                            alignment: WrapAlignment.center,
-                                            children: [
-                                              Text(
-                                                list.qpnumber.toString(),
-                                                textAlign: TextAlign.center,
-                                              )
-                                            ]),
-                                      ))),
-                                  DataCell(Center(
-                                      child: Center(
-                                        child: Wrap(
-                                            direction: Axis.vertical, //default
-                                            alignment: WrapAlignment.center,
-                                            children: [
-                                              Text(
-                                                  DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(int.parse(list.postingdate.replaceAll(".", "").replaceAll("/Date(", "").replaceAll(")/", ""))))
-                                                  ,
-                                                  textAlign: TextAlign.center)
-                                            ]),
-                                      ))),
-                                  DataCell(
-                                    Center(
-                                        child: Center(
-                                            child: Wrap(
-                                                direction: Axis.vertical, //default
-                                                alignment: WrapAlignment.center,
-                                                children: [
-                                                  Text(list.packno.toString(),
-                                                      textAlign: TextAlign.center)
-                                                ]))),
-                                  ),
-                                  DataCell(
-                                    Center(
-                                        child: Center(
-                                            child: Wrap(
-                                                direction: Axis.vertical, //default
-                                                alignment: WrapAlignment.center,
-                                                children: [
-                                                  Text(DateFormat.yMd().add_jm().format(DateTime.fromMillisecondsSinceEpoch(int.parse(list.documentdate.replaceAll("/Date(", "").replaceAll(")/", ""))))
-                                                      ,textAlign: TextAlign.center)
-                                                ]))),
-                                  ),
-                                  DataCell(
-                                    Center(
-                                        child: Center(
-                                            child: Wrap(
-                                                direction: Axis.vertical, //default
-                                                alignment: WrapAlignment.center,
-                                                children: [
-                                                  Text(list.boxnumber.toString(),
-                                                      textAlign: TextAlign.center)
-                                                ]))),
-                                  ),
-                                  DataCell(
-                                    Center(
-                                        child: Center(
-                                            child: Wrap(
-                                                direction: Axis.vertical, //default
-                                                alignment: WrapAlignment.center,
-                                                children: [
-                                                  Text(list.plant.toString(),
-                                                      textAlign: TextAlign.center)
-                                                ]))),
-                                  ),
-                                  DataCell(Center(
-                                      child: Center(
-                                        child: Wrap(
-                                            direction: Axis.vertical, //default
-                                            alignment: WrapAlignment.center,
-                                            children: [
-                                              Text(
-                                                list.material.toString(),
-                                                textAlign: TextAlign.center,
-                                              )
-                                            ]),
-                                      ))),
-                                  DataCell(Center(
-                                      child: Center(
-                                        child: Wrap(
-                                            direction: Axis.vertical, //default
-                                            alignment: WrapAlignment.center,
-                                            children: [
-                                              Text(
-                                                  list.materialname.toString() ,
-                                                  textAlign: TextAlign.center)
-                                            ]),
-                                      ))),
-                                  DataCell(
-                                    Center(
-                                        child: Center(
-                                            child: Wrap(
-                                                direction: Axis.vertical, //default
-                                                alignment: WrapAlignment.center,
-                                                children: [
-                                                  Text(list.oldmaterial.toString(),
-                                                      textAlign: TextAlign.center)
-                                                ]))),
-                                  ),
-                                  DataCell(
-                                    Center(
-                                        child: Center(
-                                            child: Wrap(
-                                                direction: Axis.vertical, //default
-                                                alignment: WrapAlignment.center,
-                                                children: [
-                                                  Text(list.stocksegment.toString(),textAlign: TextAlign.center)
-                                                ]))),
-                                  ),
-                                  DataCell(
-                                    Center(
-                                        child: Center(
-                                            child: Wrap(
-                                                direction: Axis.vertical, //default
-                                                alignment: WrapAlignment.center,
-                                                children: [
-                                                  Text(list.yield.toString(),
-                                                      textAlign: TextAlign.center)
-                                                ]))),
-                                  ),
-                                  DataCell(
-                                    Center(
-                                        child: Center(
-                                            child: Wrap(
-                                                direction: Axis.vertical, //default
-                                                alignment: WrapAlignment.center,
-                                                children: [
-                                                  Text(list.confunit.toString(),
-                                                      textAlign: TextAlign.center)
-                                                ]))),
-                                  ),
-                                  DataCell(
-                                    Center(
-                                        child: Center(
-                                            child: Wrap(
-                                                direction: Axis.vertical, //default
-                                                alignment: WrapAlignment.center,
-                                                children: [
-                                                  Text(list.qcpending.toString(),
-                                                      textAlign: TextAlign.center)
-                                                ]))),
-                                  ),
-                                ]),
-                              )
-                                  .toList()))],
+                            ),
+                        ):Container(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text("No Details Found"),
+                          ),
+                        )],
                     
                     ):Text("No Results"),
                       ),
                   SizedBox(height: height/30,),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Container(
                           alignment: Alignment.center,
@@ -879,7 +818,7 @@ if(response.statusCode==200) {
       ),
       appBar: AppBar(
         title:
-            Text("Packaging"),
+            Text("Box Pick and Place"),
     ),
     );
 

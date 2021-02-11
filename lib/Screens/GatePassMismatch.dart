@@ -830,8 +830,10 @@ class GatePassMismatchState extends State<GatePassMismatch> {
             : Center(child: CircularProgressIndicator()),
       ),
       appBar: AppBar(
-        title: Text("Gate Pass Mismatch"),
+        title: Text("Dispatch Scanning"),
       ),
     );
   }
+
+
 }

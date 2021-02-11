@@ -34,6 +34,7 @@ class PackageGetBOXDetails {
   String yield;
   String confunit;
   String qcpending;
+  String grossweight;
   String success;
   String message;
 
@@ -51,6 +52,7 @@ class PackageGetBOXDetails {
         this.yield,
         this.confunit,
         this.qcpending,
+        this.grossweight,
         this.success,
         this.message});
 
@@ -68,6 +70,7 @@ class PackageGetBOXDetails {
     yield = json['Yield'];
     confunit = json['Confunit'];
     qcpending = json['Qcpending'];
+    grossweight = json['Grossweight'];
     success = json['Success'];
     message = json['Message'];
   }
@@ -87,6 +90,7 @@ class PackageGetBOXDetails {
     data['Yield'] = this.yield;
     data['Confunit'] = this.confunit;
     data['Qcpending'] = this.qcpending;
+    data['Grossweight'] = this.grossweight;
     data['Success'] = this.success;
     data['Message'] = this.message;
     return data;

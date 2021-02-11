@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:packingvsdispatch/Screens/GatePassMismatch.dart';
+import 'package:packingvsdispatch/Screens/LoginPage.dart';
 
 import 'Packing.dart';
 import 'Picking.dart';
@@ -30,7 +31,7 @@ class _DashboardState extends State<Dashboard> {
               child: Stack(
                 children: [
                   Container(
-                      height: height / 5,
+                      height: height / 2.5,
                       decoration: BoxDecoration(
                           color: Colors.blue,
                           borderRadius: BorderRadius.only(
@@ -38,20 +39,87 @@ class _DashboardState extends State<Dashboard> {
                               bottomLeft: Radius.circular(20)))),
                   Container(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Text(
-                            "Dashboard",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 20),
+                        Card(
+
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+
+
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  "Dashboard",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 16),
+                                ),
+                              ),
+                              IconButton(icon: Icon(Icons.logout,color: Colors.white,), onPressed:(){
+                                LoginScreenState.emailController.text="";
+                                LoginScreenState.passwordController.text="";
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()),
+                                      (Route<dynamic> route) => false,
+                                );
+
+                              } ),
+
+                            ],
                           ),
+                          color: Colors.blue,
+                        ),
+                        SizedBox(
+                          height: height / 60,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset("logo.png",height: height/9,),
+                          ],
+                        ),
+                        SizedBox(
+                          height: height / 60,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left:16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Indus ",
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),),
+                              Text(
+                                "Nova ",
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),),
+                              Text(
+                                "Packaging",
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),),
+                            ],),
+                        ),
+                        SizedBox(
+                          height: height / 60,
                         ),
                         Container(
                           padding: EdgeInsets.all(16),
-                          height: height -64,
+                          height: height-height/3,
                           width: width,
                           child: GridView.count(
                             crossAxisSpacing: width / 40,
@@ -86,7 +154,7 @@ class _DashboardState extends State<Dashboard> {
                                             width: double.infinity,
                                             color: Colors.deepOrange,
                                             child: Text(
-                                              "Box Packing",
+                                              "Box Pick and Place",
                                               style: TextStyle(
                                                   color: Colors.white),
                                             ))
@@ -121,7 +189,7 @@ class _DashboardState extends State<Dashboard> {
                                             width: double.infinity,
                                             color: Colors.teal,
                                             child: Text(
-                                              "Box Picking",
+                                              "Box Pick List",
                                               style: TextStyle(
                                                   color: Colors.white),
                                             ))
@@ -156,7 +224,7 @@ class _DashboardState extends State<Dashboard> {
                                             width: double.infinity,
                                             color: Colors.blue,
                                             child: Text(
-                                              "Gate Pass Mismatch",
+                                              "Dispatch Scanning",
                                               style: TextStyle(
                                                   color: Colors.white),
                                             ))
