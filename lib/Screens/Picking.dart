@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:packingvsdispatch/CommonFunctions/CommonFunctions.dart';
 import 'package:packingvsdispatch/Model/Get%20OBD.dart';
+import 'package:packingvsdispatch/Model/GetBoxDetailsModel.dart';
 import 'package:packingvsdispatch/Screens/Dashboard.dart';
 import 'package:packingvsdispatch/Screens/LoginPage.dart';
 import 'package:packingvsdispatch/Model/PackageGetBOXDetailsResponse.dart';
@@ -26,8 +27,11 @@ class PickingState extends State<Picking> {
   bool datatablevisibility=false;
   final TextEditingController _typeAheadController = TextEditingController();
   BoxSaveResponseList li1;
-
+  List<String> stringlist =[" Select OBD Number "];
+  String dropdownValue1 = " Select OBD Number ";
   static GetOBDList li3;
+
+  GetCustomerDetailsList li4;
 
   Future<http.Response> apicall() async {
     setState(() {
@@ -100,7 +104,7 @@ class PickingState extends State<Picking> {
     //   // "x-csrf-token": LoginScreenState.csrftoken.toString(),
     //   // "Content-Type": "application/json",
     // };
-    url = "http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/getOBDlist";
+    url = "http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/getCustomerOBD";
 
     print(url);
     // print(headers);
@@ -123,6 +127,49 @@ class PickingState extends State<Picking> {
         loading = false;
       });
      
+
+
+    } else {
+      setState(() {
+        loading = false;
+      });
+      print("Retry");
+    }
+    print("response: ${response.statusCode}");
+    print("response: ${response.body}");
+    return response;
+  }
+  Future<http.Response> dropdowncall(cuscode) async {
+    setState(() {
+      loading = true;
+    });
+
+    var url;
+
+    url = "http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/getOBDlist?customer=$cuscode";
+    print(url);
+    var response = await http.get(url,);
+
+
+    print(response.body);
+
+    if (response.statusCode == 200)
+    {
+      li4 = GetCustomerDetailsList.fromJson(json.decode(response.body));
+      // datatablevisibility=true;
+
+      setState(() {
+        stringlist.clear();
+        stringlist.add(" Select OBD Number ");
+        for(int i=0;i<li4.details.length;i++)
+          stringlist.add(li4.details[i].delivery);
+      });
+
+
+      setState(() {
+        loading = false;
+      });
+
 
 
     } else {
@@ -163,7 +210,7 @@ class PickingState extends State<Picking> {
     //   "Content-Type": "application/json",
     // };
     url =
-        "http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/pick?delivery=${OutboundController.text}&box=${BarcodeController.text}&bin=${BinScanController.text}&user=${LoginScreenState.emailController.text}";
+        "http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/pick?delivery=${dropdownValue1}&box=${BarcodeController.text}&bin=${BinScanController.text}&user=${LoginScreenState.emailController.text}";
     // http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/pack?box=AG00011097&bin=DUMMY&grossweight=10&user=ADMIN
 
     var response = await http.get(url);
@@ -275,7 +322,9 @@ class PickingState extends State<Picking> {
   TextEditingController BinScanController = new TextEditingController();
   TextEditingController CustomerNameController = new TextEditingController();
   TextEditingController CustomerCodeController = new TextEditingController();
-
+  TextEditingController ReqSegController = new TextEditingController();
+  TextEditingController MtrDesController = new TextEditingController();
+  TextEditingController MtrController = new TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
@@ -329,306 +378,365 @@ class PickingState extends State<Picking> {
     return Scaffold(
       body:SafeArea(
         child: loading==false?SingleChildScrollView(
-          child: Container(
-              width: width,
-              height: height,
-              child:
-              Column(
-                children: [
+          child: Column(
+            children: [
 
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16.0, right: 16.0,top:16),
-                    child: TypeAheadFormField(
-                      textFieldConfiguration: TextFieldConfiguration(
-                        enabled: true,
-                        controller: this._typeAheadController,
-                        // onTap: ()
-                        // {
-                        //   Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //           builder: (context) =>
-                        //               Category(userid:HomeState.userid,mapselection: true)));
-                        // },
-                        keyboardType: TextInputType.text,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.search),
-                          labelText: 'Customer Name',
-                          hintStyle: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 16.0,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                        ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0,top:16),
+                child: TypeAheadFormField(
+                  textFieldConfiguration: TextFieldConfiguration(
+                    enabled: true,
+                    controller: this._typeAheadController,
+                    // onTap: ()
+                    // {
+                    //   Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //           builder: (context) =>
+                    //               Category(userid:HomeState.userid,mapselection: true)));
+                    // },
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.search),
+                      labelText: 'Customer Name',
+                      hintStyle: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16.0,
                       ),
-                      suggestionsCallback: (pattern) {
-                        return BackendService.getSuggestions(pattern);
-                      },
-                      itemBuilder: (context, suggestion) {
-                        return ListTile(
-                          title: Text(suggestion),
-                        );
-                      },
-                      transitionBuilder: (context, suggestionsBox, controller) {
-                        return suggestionsBox;
-                      },
-                      onSuggestionSelected: (suggestion) {
-                        // postRequest(suggestion);
-                        for (int i = 0;
-                        i < li3.details.length;
-                        i++) {
-                          print(li3.details[i].customername);
-                          if ("${li3.details[i].customername}-${li3.details[i].customer}" ==
-                              suggestion)
-                          {
-                          CustomerCodeController.text=li3.details[i].customer;
-                          OutboundController.text=li3.details[i].delivery;
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                    ),
+                  ),
+                  suggestionsCallback: (pattern) {
+                    return BackendService.getSuggestions(pattern);
+                  },
+                  itemBuilder: (context, suggestion) {
+                    return ListTile(
+                      title: Text(suggestion),
+                    );
+                  },
+                  transitionBuilder: (context, suggestionsBox, controller) {
+                    return suggestionsBox;
+                  },
+                  onSuggestionSelected: (suggestion) {
+                    setState(() {
+                      dropdownValue1 = " Select OBD Number ";
+                    });
+
+                    // postRequest(suggestion);
+                    for (int i = 0;
+                    i < li3.details.length;
+                    i++) {
+                      print(li3.details[i].customername);
+                      if ("${li3.details[i].customername}-${li3.details[i].customer}" ==
+                          suggestion)
+                      {
+                      CustomerCodeController.text=li3.details[i].customer;
+
+                      dropdowncall(li3.details[i].customer);
+                      OutboundController.text=li3.details[i].delivery;
+
+                      }
+                    }
+                    this._typeAheadController.text = suggestion;
+                  },
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please select a city';
+                    } else
+                      return 'nothing';
+                  },
+                  // onSaved: (value) => this._selectedCity = value,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top:16.0,left: 16,right: 16),
+                child: new TextField(
+                  enabled: false,
+                  onSubmitted: (value){
+                    apicall();
+
+                  },
+
+                  controller: CustomerCodeController,
+                  decoration: InputDecoration(
+                    labelText: 'Customer Code',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16.0,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: height/30,),
+              Container(
+                margin: const EdgeInsets.only(left: 16.0, right: 16.0),
+                padding: const EdgeInsets.only(left: 20.0, right: 10.0),
+                decoration: new BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(2.0)),
+                    border: new Border.all(color: Colors.black38)),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    isExpanded: true,
+                    value: dropdownValue1,
+                    onChanged: (String newValue) {
+                      setState(() {
+                        dropdownValue1 = newValue;
+                        for(int i=0;i<li4.details.length;i++)
+                          if(li4.details[i].delivery==newValue)
+                            {
+                              MtrController.text=li4.details[i].material;
+                              MtrDesController.text=li4.details[i].materialdescription;
+                              ReqSegController.text=li4.details[i].requirementsegment;
+                            }
+
+                      });
+                    },
+                    items: stringlist
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top:16.0,left: 16,right: 16),
+                child: new TextField(
+                  onSubmitted: (value){
+                    apicall();
+
+                  },
+                  enabled: false,
+
+                  controller: MtrController,
+                  decoration: InputDecoration(
+                    labelText: 'Material',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16.0,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top:16.0,left: 16,right: 16),
+                child: new TextField(
+                  onSubmitted: (value){
+                    apicall();
+
+                  },
+                  enabled: false,
+
+                  controller: MtrDesController,
+                  decoration: InputDecoration(
+                    labelText: 'Material Description',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16.0,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top:16.0,left: 16,right: 16),
+                child: new TextField(
+                  onSubmitted: (value){
+                    apicall();
+
+                  },
+                  enabled: false,
+
+                  controller: ReqSegController,
+                  decoration: InputDecoration(
+                    labelText: 'Requirement Segment',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16.0,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: new TextField(
+
+                  // onSubmitted: (value){
+                  //   apicall();
+                  //
+                  // },
+
+                  controller: BarcodeController,
+                  decoration: InputDecoration(
+                    labelText: 'Matl. Identification Slip',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16.0,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.only(left:16.0,right:16.0,bottom: 16.0),
+                child: new TextField(
+                  controller: BinScanController,
+                  decoration: InputDecoration(
+                    labelText: 'Scan Bin',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16.0,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left:16.0,right:16.0,bottom: 16.0),
+                child: new TextField(
+                  enabled: false,
+                  controller: RackScanController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Box Weight',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16.0,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: height/30,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(50))),
+                      child: FlatButton(
+                        onPressed: () {
+                          if (BarcodeController.text.length !=0 &&
+                              BinScanController.text.length != 0
+                              &&
+                              dropdownValue1 != " Select OBD Number " )
+                            saveapicall();
+                          else {
+                            if (BarcodeController.text.length == 0)
+                              showDialog<void>(
+                                context: context,
+                                barrierDismissible: false,
+                                // user must tap button!
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title:
+                                    Text("Matl. Identification Slip"),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text('OK'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+
+                            else if (dropdownValue1 == " Select OBD Number ")
+                              showDialog<void>(
+                                context: context,
+                                barrierDismissible: false,
+                                // user must tap button!
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text(
+                                        "Please Select OBD Number "),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text('OK'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            else if (BinScanController.text.length == 0)
+                              showDialog<void>(
+                                context: context,
+                                barrierDismissible: false,
+                                // user must tap button!
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title:
+                                    Text("Bin Cannot be empty"),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text('OK'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
 
                           }
-                        }
-                        this._typeAheadController.text = suggestion;
-                      },
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please select a city';
-                        } else
-                          return 'nothing';
-                      },
-                      // onSaved: (value) => this._selectedCity = value,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top:16.0,left: 16,right: 16),
-                    child: new TextField(
-                      enabled: false,
-                      onSubmitted: (value){
-                        apicall();
-
-                      },
-
-                      controller: CustomerCodeController,
-                      decoration: InputDecoration(
-                        labelText: 'Customer Code',
-                        hintStyle: TextStyle(
+                        },
+                        child: Text(
+                          "Save",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )),
+                  Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
                           color: Colors.grey,
-                          fontSize: 16.0,
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(50))),
+                      child: FlatButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Dashboard()));
+                        },
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(color: Colors.white),
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.only(top:16.0,left: 16,right: 16),
-                    child: new TextField(
-                      onSubmitted: (value){
-                        apicall();
-
-                      },
-                      enabled: false,
-
-                      controller: OutboundController,
-                      decoration: InputDecoration(
-                        labelText: 'Out Bound Delivery Number',
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16.0,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: new TextField(
-
-                      // onSubmitted: (value){
-                      //   apicall();
-                      //
-                      // },
-
-                      controller: BarcodeController,
-                      decoration: InputDecoration(
-                        labelText: 'Matl. Identification Slip',
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16.0,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.only(left:16.0,right:16.0,bottom: 16.0),
-                    child: new TextField(
-                      controller: BinScanController,
-                      decoration: InputDecoration(
-                        labelText: 'Scan Bin',
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16.0,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left:16.0,right:16.0,bottom: 16.0),
-                    child: new TextField(
-                      enabled: false,
-                      controller: RackScanController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: 'Box Weight',
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16.0,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: height/30,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(50))),
-                          child: FlatButton(
-                            onPressed: () {
-                              if (BarcodeController.text.length !=0 &&
-                                  BinScanController.text.length != 0 &&
-                                  RackScanController.text.length != 0
-                                  &&
-                                  OutboundController.text.length != 0 )
-                                saveapicall();
-                              else {
-                                if (BarcodeController.text.length == 0)
-                                  showDialog<void>(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    // user must tap button!
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title:
-                                        Text("Bar code cannot be empty"),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: Text('OK'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                else if (RackScanController.text.length == 0)
-                                  showDialog<void>(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    // user must tap button!
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text(
-                                            "Rack number cannot be empty"),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: Text('OK'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                else if (OutboundController.text.length == 0)
-                                  showDialog<void>(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    // user must tap button!
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text(
-                                            "Out Bound Delivery Number cannot be empty"),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: Text('OK'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                else if (BinScanController.text.length == 0)
-                                  showDialog<void>(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    // user must tap button!
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title:
-                                        Text("Bin Cannot be empty"),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: Text('OK'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-
-                              }
-                            },
-                            child: Text(
-                              "Save",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          )),
-                      Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(50))),
-                          child: FlatButton(
-                            onPressed: () {
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Dashboard()));
-                            },
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          )),
-                    ],
-                  ),
-
+                      )),
                 ],
-              )
+              ),
+
+            ],
           ),
 
 
