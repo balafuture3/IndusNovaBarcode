@@ -6,7 +6,7 @@ import 'package:http/http.dart';
 import 'package:packingvsdispatch/CommonFunctions/CommonFunctions.dart';
 import 'package:packingvsdispatch/Model/LoginResponse.dart';
 import 'package:packingvsdispatch/Screens/Dashboard.dart';
-import 'package:packingvsdispatch/Screens/Packing.dart';
+import 'package:packingvsdispatch/Screens/BoxPickandPlace.dart';
 import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
@@ -137,7 +137,7 @@ static String csrftoken;
                     onTap: () {},
                     child: Padding(
                       padding: const EdgeInsets.only(right: 24.0),
-                      child: InkWell(
+                      child: GestureDetector(
                         child: Container(
                           padding: const EdgeInsets.all(16.0),
                           child: Text("Login "),
@@ -267,7 +267,7 @@ static String csrftoken;
                     onTap: () {},
                     child: Padding(
                       padding: const EdgeInsets.only(right: 24.0),
-                      child: InkWell(
+                      child: GestureDetector(
                         child: Container(
                           padding: const EdgeInsets.all(16.0),
                           child: Text("Forgot Password?"),
@@ -310,7 +310,7 @@ static String csrftoken;
             //
             // Container(
             //   child: Center(
-            //     child: InkWell(
+            //     child: GestureDetector(
             //       onTap: (){
             //         Navigator.pushReplacement(
             //           context,

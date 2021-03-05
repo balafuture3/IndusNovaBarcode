@@ -4,8 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:packingvsdispatch/Screens/GatePassMismatch.dart';
 import 'package:packingvsdispatch/Screens/LoginPage.dart';
 
-import 'Packing.dart';
-import 'Picking.dart';
+import 'BoxPickandPlace.dart';
+import 'BoxPickList.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -117,121 +117,123 @@ class _DashboardState extends State<Dashboard> {
                         SizedBox(
                           height: height / 60,
                         ),
-                        Container(
-                          padding: EdgeInsets.all(16),
-                          height: height-height/3,
-                          width: width,
-                          child: GridView.count(
-                            crossAxisSpacing: width / 40,
-                            mainAxisSpacing: height / 60,
-                            crossAxisCount: 2,
-                            children: <Widget>[
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Packing()),
-                                  );
-                                },
-                                child: Card(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0)),
-                                    elevation: 8,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset("packing.jpeg",
-                                            height: height / 8,
-                                            width: double.infinity),
-                                        SizedBox(
-                                          height: height / 40,
-                                        ),
-                                        Container(
-                                            padding: EdgeInsets.all(3),
-                                            width: double.infinity,
-                                            color: Colors.deepOrange,
-                                            child: Text(
-                                              "Box Pick and Place",
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ))
-                                      ],
-                                    )),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Picking()),
-                                  );
-                                },
-                                child: Card(
-                                    elevation: 8,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0)),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset("picking.jpg",
-                                            height: height / 8,
-                                            width: double.infinity),
-                                        SizedBox(
-                                          height: height / 40,
-                                        ),
-                                        Container(
-                                            padding: EdgeInsets.all(3),
-                                            width: double.infinity,
-                                            color: Colors.teal,
-                                            child: Text(
-                                              "Box Pick List",
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ))
-                                      ],
-                                    )),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.all(16),
+                            height: height-height/3,
+                            width: width,
+                            child: GridView.count(
+                              crossAxisSpacing: width / 40,
+                              mainAxisSpacing: height / 60,
+                              crossAxisCount: 2,
+                              children: <Widget>[
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              GatePassMismatch()));
-                                },
-                                child: Card(
-                                    elevation: 8,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0)),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset("mismatch.jpeg",
-                                            height: height / 8,
-                                            width: double.infinity),
-                                        SizedBox(
-                                          height: height / 40,
-                                        ),
-                                        Container(
-                                            padding: EdgeInsets.all(3),
-                                            width: double.infinity,
-                                            color: Colors.blue,
-                                            child: Text(
-                                              "Dispatch Scanning",
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ))
-                                      ],
-                                    )),
-                              ),
-                            ],
+                                          builder: (context) => Packing()),
+                                    );
+                                  },
+                                  child: Card(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                      elevation: 8,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset("packing.jpeg",
+                                              height: height / 8,
+                                              width: double.infinity),
+                                          SizedBox(
+                                            height: height / 40,
+                                          ),
+                                          Container(
+                                              padding: EdgeInsets.all(3),
+                                              width: double.infinity,
+                                              color: Colors.deepOrange,
+                                              child: Text(
+                                                "Box Pick and Place",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ))
+                                        ],
+                                      )),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Picking()),
+                                    );
+                                  },
+                                  child: Card(
+                                      elevation: 8,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset("picking.jpg",
+                                              height: height / 8,
+                                              width: double.infinity),
+                                          SizedBox(
+                                            height: height / 40,
+                                          ),
+                                          Container(
+                                              padding: EdgeInsets.all(3),
+                                              width: double.infinity,
+                                              color: Colors.teal,
+                                              child: Text(
+                                                "Box Pick List",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ))
+                                        ],
+                                      )),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                GatePassMismatch()));
+                                  },
+                                  child: Card(
+                                      elevation: 8,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset("mismatch.jpeg",
+                                              height: height / 8,
+                                              width: double.infinity),
+                                          SizedBox(
+                                            height: height / 40,
+                                          ),
+                                          Container(
+                                              padding: EdgeInsets.all(3),
+                                              width: double.infinity,
+                                              color: Colors.blue,
+                                              child: Text(
+                                                "Dispatch Scanning",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ))
+                                        ],
+                                      )),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],

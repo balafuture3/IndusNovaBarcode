@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:packingvsdispatch/Screens/Dashboard.dart';
 import 'package:packingvsdispatch/Screens/LoginPage.dart';
-import 'package:packingvsdispatch/Screens/Packing.dart';
+import 'package:packingvsdispatch/Screens/BoxPickandPlace.dart';
 
 void main() {
   runApp(MyApp());

@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:packingvsdispatch/CommonFunctions/CommonFunctions.dart';
@@ -16,6 +18,242 @@ class GatePassMismatch extends StatefulWidget {
 }
 
 class GatePassMismatchState extends State<GatePassMismatch> {
+  Future<void> scanBarcodeNormal() async {
+    String barcodeScanRes;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.BARCODE);
+      print(barcodeScanRes);
+      if(barcodeScanRes!="-1")
+        GatePassController.text=barcodeScanRes;
+      // showDialog<void>(
+      //   context: context,
+      //   barrierDismissible: false, // user must tap button!
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       title: Text("BarCode Data : $barcodeScanRes"),
+      //       actions: <Widget>[
+      //         TextButton(
+      //           child: Text('OK'),
+      //           onPressed: () {
+      //             Navigator.of(context).pop();
+      //           },
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _scanBarcode = barcodeScanRes;
+    });
+  }
+  Future<void> scanBarcodeNormal1() async {
+    String barcodeScanRes;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.BARCODE);
+      print(barcodeScanRes);
+      if(barcodeScanRes!="-1")
+        InvoiceNumberController.text=barcodeScanRes;
+      // showDialog<void>(
+      //   context: context,
+      //   barrierDismissible: false, // user must tap button!
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       title: Text("BarCode Data : $barcodeScanRes"),
+      //       actions: <Widget>[
+      //         TextButton(
+      //           child: Text('OK'),
+      //           onPressed: () {
+      //             Navigator.of(context).pop();
+      //           },
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _scanBarcode = barcodeScanRes;
+    });
+  }
+  Future<void> scanBarcodeNormal2() async {
+    String barcodeScanRes;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.BARCODE);
+      print(barcodeScanRes);
+      if(barcodeScanRes!="-1")
+        InvoiceNumber2Controller.text=barcodeScanRes;
+      // showDialog<void>(
+      //   context: context,
+      //   barrierDismissible: false, // user must tap button!
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       title: Text("BarCode Data : $barcodeScanRes"),
+      //       actions: <Widget>[
+      //         TextButton(
+      //           child: Text('OK'),
+      //           onPressed: () {
+      //             Navigator.of(context).pop();
+      //           },
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _scanBarcode = barcodeScanRes;
+    });
+  }
+
+  Future<void> scanBarcodeNormal3() async {
+    String barcodeScanRes;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.BARCODE);
+      print(barcodeScanRes);
+      if(barcodeScanRes!="-1")
+        PackingSlipController.text=barcodeScanRes;
+      // showDialog<void>(
+      //   context: context,
+      //   barrierDismissible: false, // user must tap button!
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       title: Text("BarCode Data : $barcodeScanRes"),
+      //       actions: <Widget>[
+      //         TextButton(
+      //           child: Text('OK'),
+      //           onPressed: () {
+      //             Navigator.of(context).pop();
+      //           },
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _scanBarcode = barcodeScanRes;
+    });
+  }
+
+  Future<void> scanBarcodeNormal4() async {
+    String barcodeScanRes;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.BARCODE);
+      print(barcodeScanRes);
+      if(barcodeScanRes!="-1")
+        PackingListController.text=barcodeScanRes;
+      // showDialog<void>(
+      //   context: context,
+      //   barrierDismissible: false, // user must tap button!
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       title: Text("BarCode Data : $barcodeScanRes"),
+      //       actions: <Widget>[
+      //         TextButton(
+      //           child: Text('OK'),
+      //           onPressed: () {
+      //             Navigator.of(context).pop();
+      //           },
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _scanBarcode = barcodeScanRes;
+    });
+  }
+  Future<void> scanBarcodeNormal5() async {
+    String barcodeScanRes;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.BARCODE);
+      print(barcodeScanRes);
+      if(barcodeScanRes!="-1")
+        MaterialIdentificationController.text=barcodeScanRes;
+      // showDialog<void>(
+      //   context: context,
+      //   barrierDismissible: false, // user must tap button!
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       title: Text("BarCode Data : $barcodeScanRes"),
+      //       actions: <Widget>[
+      //         TextButton(
+      //           child: Text('OK'),
+      //           onPressed: () {
+      //             Navigator.of(context).pop();
+      //           },
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _scanBarcode = barcodeScanRes;
+    });
+  }
   bool loading = false;
 
   PackageGetBOXList li;
@@ -274,429 +512,255 @@ class GatePassMismatchState extends State<GatePassMismatch> {
       body: SafeArea(
         child: loading == false
             ? SingleChildScrollView(
-                child: Container(
-                    width: width,
-                    height: height,
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: height / 50,
-                        ),
-                        Container(
-                          color: Colors.white,
-                          child: Card(
-                            elevation: 10,
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  color: Colors.blue,
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Text(
-                                    "Gate pass vs Invoice number",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w800),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: new TextField(
-                                    controller: GatePassController,
-                                    enabled: control1,
-                                    decoration: InputDecoration(
-                                      labelText: 'Gate Pass',
-                                      hintStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 16.0,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                      ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: height / 50,
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: Card(
+                        elevation: 10,
+                        child: Column(
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              color: Colors.blue,
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                "Gate pass vs Invoice number",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: GestureDetector(
+                                onDoubleTap: control1?scanBarcodeNormal:null,
+                                child: new TextField(
+                                  controller: GatePassController,
+                                  enabled: control1,
+                                  decoration: InputDecoration(
+                                    labelText: 'Gate Pass',
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 16.0,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(5.0),
                                     ),
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 16.0, right: 16.0, bottom: 16.0),
-                                  child: new TextField(
-                                    enabled: control1,
-                                    onSubmitted: (value) {
-                                      if (InvoiceNumberController.text ==
-                                          GatePassController.text) {
-                                        setState(() {
-                                          control1 = false;
-                                        });
-                                      } else {
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 16.0, right: 16.0, bottom: 16.0),
+                              child: GestureDetector(
+                                onDoubleTap: scanBarcodeNormal1,
+                                child: new TextField(
+                                  enabled: control1,
+                                  onSubmitted: (value) {
+                                    if (InvoiceNumberController.text ==
+                                        GatePassController.text) {
+                                      setState(() {
+                                        control1 = false;
+                                      });
+                                    } else {
     setState(() {
       InvoiceNumberController.text = "";
       GatePassController.text = "";
     });
-                                        showDialog<void>(
-                                            context: context,
-                                            barrierDismissible: true,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                backgroundColor:
-                                                    Colors.white.withOpacity(0),
-                                                title: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.blue,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            bottomLeft:
-                                                                Radius.circular(
-                                                                    50),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    50),
-                                                            topLeft:
-                                                                Radius.circular(
-                                                                    50),
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    50)),
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceEvenly,
-                                                    children: [
-                                                      Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(16.0),
-                                                        child: Image.asset(
-                                                          "logo.png",
-                                                          height: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .height /
-                                                              8,
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 5,
-                                                      ),
-                                                      Text(
-                                                        "Indus Nova Packaging",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.yellow,
-                                                            fontSize: 18),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 30,
-                                                      ),
-                                                      Text(
-                                                        "Gate and Invoice Mismatch",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 16),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 30,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(8.0),
-                                                            child: TextButton(
-                                                              child: Text(
-                                                                'OK',
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .end,
-                                                              ),
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
+                                      showDialog<void>(
+                                          context: context,
+                                          barrierDismissible: true,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              backgroundColor:
+                                                  Colors.white.withOpacity(0),
+                                              title: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.blue,
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  50),
+                                                          bottomRight:
+                                                              Radius.circular(
+                                                                  50),
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  50),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  50)),
                                                 ),
-
-                                                // actions: <Widget>[
-                                                //   TextButton(
-                                                //     child: Text('OK'),
-                                                //     onPressed: () {
-                                                //       Navigator.of(context).pop();
-                                                //     },
-                                                //   ),
-                                                // ],
-                                              );
-                                            });
-                                      }
-                                    },
-                                    controller: InvoiceNumberController,
-                                    keyboardType: TextInputType.number,
-                                    decoration: InputDecoration(
-                                      labelText: 'Invoice Number Bar code',
-                                      hintStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 16.0,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: height / 50,
-                        ),
-                        Container(
-                          color: Colors.white,
-                          child: Card(
-                            elevation: 10,
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  color: Colors.blue,
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Text(
-                                    "Invoice vs Packing Slip",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w800),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: new TextField(
-                                    controller: InvoiceNumber2Controller,
-                                    decoration: InputDecoration(
-                                      labelText: 'Invoice Number',
-                                      hintStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 16.0,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 16.0, right: 16.0, bottom: 16.0),
-                                  child: new TextField(
-                                    onSubmitted: (value) {
-                                      if(InvoiceNumber2Controller.text==PackingSlipController.text)
-                                        {
-                                          setState(() {
-                                            control2=false;
-
-                                          });
-                                        }
-                                      else {
-                                        InvoiceNumber2Controller.text="";
-                                        PackingSlipController.text="";
-                                        showDialog<void>(
-                                            context: context,
-                                            barrierDismissible: true,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                backgroundColor:
-                                                Colors.white.withOpacity(0),
-                                                title: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.blue,
-                                                    borderRadius:
-                                                    BorderRadius.only(
-                                                        bottomLeft:
-                                                        Radius.circular(
-                                                            50),
-                                                        bottomRight:
-                                                        Radius.circular(
-                                                            50),
-                                                        topLeft:
-                                                        Radius.circular(
-                                                            50),
-                                                        topRight:
-                                                        Radius.circular(
-                                                            50)),
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                    children: [
-                                                      Container(
-                                                        padding:
-                                                        const EdgeInsets
-                                                            .all(16.0),
-                                                        child: Image.asset(
-                                                          "logo.png",
-                                                          height: MediaQuery
-                                                              .of(
-                                                              context)
-                                                              .size
-                                                              .height /
-                                                              8,
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 5,
-                                                      ),
-                                                      Text(
-                                                        "Indus Nova Packaging",
-                                                        style: TextStyle(
-                                                            color:
-                                                            Colors.yellow,
-                                                            fontSize: 18),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 30,
-                                                      ),
-                                                      Text(
-                                                        "Invoice vs packing Slip Mismatch",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 16),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 30,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .end,
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                            child: TextButton(
-                                                              child: Text(
-                                                                'OK',
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white),
-                                                                textAlign:
-                                                                TextAlign
-                                                                    .end,
-                                                              ),
-                                                              onPressed: () {
-                                                                Navigator.of(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: [
+                                                    Container(
+                                                      padding:
+                                                          const EdgeInsets
+                                                              .all(16.0),
+                                                      child: Image.asset(
+                                                        "logo.png",
+                                                        height: MediaQuery.of(
                                                                     context)
-                                                                    .pop();
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ],
+                                                                .size
+                                                                .height /
+                                                            8,
                                                       ),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    Text(
+                                                      "Indus Nova Packaging",
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.yellow,
+                                                          fontSize: 18),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 30,
+                                                    ),
+                                                    Text(
+                                                      "Gate and Invoice Mismatch",
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 16),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 30,
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .end,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: TextButton(
+                                                            child: Text(
+                                                              'OK',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .end,
+                                                            ),
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
                                                 ),
+                                              ),
 
-                                                // actions: <Widget>[
-                                                //   TextButton(
-                                                //     child: Text('OK'),
-                                                //     onPressed: () {
-                                                //       Navigator.of(context).pop();
-                                                //     },
-                                                //   ),
-                                                // ],
-                                              );
-                                            });
-                                      }
-                                    },
-                                    controller: PackingSlipController,
-                                    keyboardType: TextInputType.number,
-                                    decoration: InputDecoration(
-                                      labelText: 'Packing Slip Number',
-                                      hintStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 16.0,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                      ),
+                                              // actions: <Widget>[
+                                              //   TextButton(
+                                              //     child: Text('OK'),
+                                              //     onPressed: () {
+                                              //       Navigator.of(context).pop();
+                                              //     },
+                                              //   ),
+                                              // ],
+                                            );
+                                          });
+                                    }
+                                  },
+                                  controller: InvoiceNumberController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    labelText: 'Invoice Number Bar code',
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 16.0,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(5.0),
                                     ),
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                        SizedBox(
-                          height: height / 50,
-                        ),
-                        Container(
-                          color: Colors.white,
-                          child: Card(
-                            elevation: 10,
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  color: Colors.blue,
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Text(
-                                    "Packing list vs Packing Identification Slip",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w800),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: new TextField(
-                                    enabled: control3,
-
-                                    controller: PackingListController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Packing List',
-                                      hintStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 16.0,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                      ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: height / 50,
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: Card(
+                        elevation: 10,
+                        child: Column(
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              color: Colors.blue,
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                "Invoice vs Packing Slip",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: GestureDetector(
+                                onDoubleTap: control2?scanBarcodeNormal2:null,
+                                child: new TextField(
+                                  enabled: control2,
+                                  controller: InvoiceNumber2Controller,
+                                  decoration: InputDecoration(
+                                    labelText: 'Invoice Number',
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 16.0,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(5.0),
                                     ),
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 16.0, right: 16.0, bottom: 16.0),
-                                  child: new TextField(
-                                    enabled: control3,
-                                    onSubmitted: (value) {
-                                      if(MaterialIdentificationController.text==PackingListController.text)
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 16.0, right: 16.0, bottom: 16.0),
+                              child: GestureDetector(
+                                onDoubleTap: scanBarcodeNormal3,
+                                child: new TextField(
+                                  enabled: control2,
+                                  onSubmitted: (value) {
+                                    if(InvoiceNumber2Controller.text==PackingSlipController.text)
                                       {
                                         setState(() {
-                                          control3=false;
+                                          control2=false;
 
                                         });
                                       }
-                                      else{
-                                        MaterialIdentificationController.text="";
-                                        PackingListController.text="";
+                                    else {
+                                      InvoiceNumber2Controller.text="";
+                                      PackingSlipController.text="";
                                       showDialog<void>(
                                           context: context,
                                           barrierDismissible: true,
@@ -733,7 +797,8 @@ class GatePassMismatchState extends State<GatePassMismatch> {
                                                           .all(16.0),
                                                       child: Image.asset(
                                                         "logo.png",
-                                                        height: MediaQuery.of(
+                                                        height: MediaQuery
+                                                            .of(
                                                             context)
                                                             .size
                                                             .height /
@@ -754,7 +819,7 @@ class GatePassMismatchState extends State<GatePassMismatch> {
                                                       height: 30,
                                                     ),
                                                     Text(
-                                                      "Packing list vs Packing Identification Slip Mismatch",
+                                                      "Invoice vs packing Slip Mismatch",
                                                       style: TextStyle(
                                                           color: Colors.white,
                                                           fontSize: 16),
@@ -803,29 +868,219 @@ class GatePassMismatchState extends State<GatePassMismatch> {
                                               //   ),
                                               // ],
                                             );
-                                          });}
-                                    },
-                                    controller: MaterialIdentificationController,
-                                    keyboardType: TextInputType.number,
-                                    decoration: InputDecoration(
-                                      labelText: 'Material Identification Slip',
-                                      hintStyle: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 16.0,
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                      ),
+                                          });
+                                    }
+                                  },
+                                  controller: PackingSlipController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    labelText: 'Packing Slip Number',
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 16.0,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(5.0),
                                     ),
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    )),
+                      ),
+                    ),
+                    SizedBox(
+                      height: height / 50,
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: Card(
+                        elevation: 10,
+                        child: Column(
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              color: Colors.blue,
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                "Packing list vs Packing Identification Slip",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: GestureDetector(
+                                onDoubleTap: control3?scanBarcodeNormal4:null,
+                                child: new TextField(
+                                  enabled: control3,
+
+                                  controller: PackingListController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Packing List',
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 16.0,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(5.0),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 16.0, right: 16.0, bottom: 16.0),
+                              child: GestureDetector(
+                                onDoubleTap: control3?scanBarcodeNormal5:null,
+                                child: new TextField(
+                                  enabled: control3,
+                                  onSubmitted: (value) {
+                                    if(MaterialIdentificationController.text==PackingListController.text)
+                                    {
+                                      setState(() {
+                                        control3=false;
+
+                                      });
+                                    }
+                                    else{
+                                      MaterialIdentificationController.text="";
+                                      PackingListController.text="";
+                                    showDialog<void>(
+                                        context: context,
+                                        barrierDismissible: true,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            backgroundColor:
+                                            Colors.white.withOpacity(0),
+                                            title: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.blue,
+                                                borderRadius:
+                                                BorderRadius.only(
+                                                    bottomLeft:
+                                                    Radius.circular(
+                                                        50),
+                                                    bottomRight:
+                                                    Radius.circular(
+                                                        50),
+                                                    topLeft:
+                                                    Radius.circular(
+                                                        50),
+                                                    topRight:
+                                                    Radius.circular(
+                                                        50)),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment
+                                                    .spaceEvenly,
+                                                children: [
+                                                  Container(
+                                                    padding:
+                                                    const EdgeInsets
+                                                        .all(16.0),
+                                                    child: Image.asset(
+                                                      "logo.png",
+                                                      height: MediaQuery.of(
+                                                          context)
+                                                          .size
+                                                          .height /
+                                                          8,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    "Indus Nova Packaging",
+                                                    style: TextStyle(
+                                                        color:
+                                                        Colors.yellow,
+                                                        fontSize: 18),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 30,
+                                                  ),
+                                                  Text(
+                                                    "Packing list vs Packing Identification Slip Mismatch",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 16),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 30,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .end,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                        const EdgeInsets
+                                                            .all(8.0),
+                                                        child: TextButton(
+                                                          child: Text(
+                                                            'OK',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                            textAlign:
+                                                            TextAlign
+                                                                .end,
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                context)
+                                                                .pop();
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+
+                                            // actions: <Widget>[
+                                            //   TextButton(
+                                            //     child: Text('OK'),
+                                            //     onPressed: () {
+                                            //       Navigator.of(context).pop();
+                                            //     },
+                                            //   ),
+                                            // ],
+                                          );
+                                        });}
+                                  },
+                                  controller: MaterialIdentificationController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    labelText: 'Material Identification Slip',
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 16.0,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(5.0),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               )
             : Center(child: CircularProgressIndicator()),
       ),

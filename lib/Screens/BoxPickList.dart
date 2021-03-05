@@ -3,12 +3,15 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:packingvsdispatch/CommonFunctions/CommonFunctions.dart';
 import 'package:packingvsdispatch/Model/Get%20OBD.dart';
 import 'package:packingvsdispatch/Model/GetBoxDetailsModel.dart';
+import 'package:packingvsdispatch/Model/Page2BoxDetail.dart';
 import 'package:packingvsdispatch/Screens/Dashboard.dart';
 import 'package:packingvsdispatch/Screens/LoginPage.dart';
 import 'package:packingvsdispatch/Model/PackageGetBOXDetailsResponse.dart';
@@ -20,6 +23,49 @@ class Picking extends StatefulWidget {
 }
 
 class PickingState extends State<Picking> {
+  List<String> barcodelist = [];
+  List<String> locationlist = [];
+  List<String> weightlist = [];
+  Page2BoxDetailModelList li7;
+  Future<void> scanBarcodeNormal() async {
+    String barcodeScanRes;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.BARCODE);
+      print(barcodeScanRes);
+      if(barcodeScanRes!="-1")
+        BarcodeController.text=barcodeScanRes;
+      // showDialog<void>(
+      //   context: context,
+      //   barrierDismissible: false, // user must tap button!
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       title: Text("BarCode Data : $barcodeScanRes"),
+      //       actions: <Widget>[
+      //         TextButton(
+      //           child: Text('OK'),
+      //           onPressed: () {
+      //             Navigator.of(context).pop();
+      //           },
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _scanBarcode = barcodeScanRes;
+    });
+  }
   bool loading=false;
 
   PackageGetBOXList li;
@@ -33,7 +79,7 @@ class PickingState extends State<Picking> {
 
   GetCustomerDetailsList li4;
 
-  Future<http.Response> apicall() async {
+  Future<http.Response> apicall(call) async {
     setState(() {
       loading = true;
     });
@@ -51,7 +97,7 @@ class PickingState extends State<Picking> {
     //   // "x-csrf-token": LoginScreenState.csrftoken.toString(),
     //   // "Content-Type": "application/json",
     // };
-    url = "http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/getBoxDetails?box=${BarcodeController.text}";
+    url = "http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/getAllBoxData?box=$call";
 
     print(url);
     // print(headers);
@@ -69,11 +115,15 @@ class PickingState extends State<Picking> {
       // print("headers:  ${response.headers["x-csrf-token"]}");
       // print("headers:  ${response.headers["content-type"]}");
       // print("headers:  ${response.headers["sap-processing-info"]}");
-      li = PackageGetBOXList.fromJson(json.decode(response.body));
+      li7 = Page2BoxDetailModelList.fromJson(json.decode(response.body));
       setState(() {
         loading = false;
       });
-      print(li.details[0].boxnumber);
+      print(li7.details[0].boxnumber);
+      setState(() {
+        locationlist.add(li7.details[0].bin);
+        weightlist.add(li7.details[0].grossweight.toString());
+      });
 
 
     } else {
@@ -209,10 +259,22 @@ class PickingState extends State<Picking> {
     //   "cookie":LoginScreenState.cookie,
     //   "Content-Type": "application/json",
     // };
-    url =
+    // http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/pick?user=ADMIN&0delivery=2007000036&0box=AG00011097&0bin=DUMMY&&0grossweight=10&1delivery=2007000038&1box=AG00011099&1bin=DUMMY1&1grossweight=10
+   if(barcodelist.length==0)
+   url =
         "http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/pick?delivery=${dropdownValue1}&box=${BarcodeController.text}&bin=${BinScanController.text}&user=${LoginScreenState.emailController.text}";
     // http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/pack?box=AG00011097&bin=DUMMY&grossweight=10&user=ADMIN
-
+   else
+   {
+     // http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/pick?user=ADMIN&0delivery=2007000036&0box=AG00011097&0bin=DUMMY&&0grossweight=10&1delivery=2007000038&1box=AG00011099&1bin=DUMMY1&1grossweight=10
+     url =
+     "http://27.100.26.22:44303/sap/bc/mobileapps/wmpickpack/pick?user=${LoginScreenState.emailController.text}";
+     String data="";
+     for(int i=0;i<barcodelist.length;i++)
+       data='$data&${i}box=${barcodelist[i]}&${i}delivery=${dropdownValue1}&${i}grossweight=${weightlist[i]}&${i}bin=${locationlist[i]}';
+     url=url+data;
+     print(url);
+   }
     var response = await http.get(url);
     print(url);
 
@@ -299,16 +361,22 @@ class PickingState extends State<Picking> {
             });
       }
       else {
-        showDialog(context: context, child: AlertDialog(
-          content: Column(
-            children: [
-
-              Container(
-                child: Text(li1.details[0].message),
+        showDialog(
+            context: context,
+            child: AlertDialog(
+              title: Text("Error!!!!",style: TextStyle(color: Colors.red),),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(left:24,right:24),
+                      child: Text(li1.details[0].message),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ));
+              actions: [FlatButton(onPressed:(){ Navigator.pop(context);}, child: Text("OK"))],
+            ));
       }
     }
     return response;
@@ -454,10 +522,7 @@ class PickingState extends State<Picking> {
                 padding: const EdgeInsets.only(top:16.0,left: 16,right: 16),
                 child: new TextField(
                   enabled: false,
-                  onSubmitted: (value){
-                    apicall();
 
-                  },
 
                   controller: CustomerCodeController,
                   decoration: InputDecoration(
@@ -509,10 +574,7 @@ class PickingState extends State<Picking> {
               Padding(
                 padding: const EdgeInsets.only(top:16.0,left: 16,right: 16),
                 child: new TextField(
-                  onSubmitted: (value){
-                    apicall();
 
-                  },
                   enabled: false,
 
                   controller: MtrController,
@@ -531,10 +593,7 @@ class PickingState extends State<Picking> {
               Padding(
                 padding: const EdgeInsets.only(top:16.0,left: 16,right: 16),
                 child: new TextField(
-                  onSubmitted: (value){
-                    apicall();
 
-                  },
                   enabled: false,
 
                   controller: MtrDesController,
@@ -553,10 +612,7 @@ class PickingState extends State<Picking> {
               Padding(
                 padding: const EdgeInsets.only(top:16.0,left: 16,right: 16),
                 child: new TextField(
-                  onSubmitted: (value){
-                    apicall();
 
-                  },
                   enabled: false,
 
                   controller: ReqSegController,
@@ -573,63 +629,194 @@ class PickingState extends State<Picking> {
                 ),
               ),
 
-              Padding(
+              Container(
+                width: width,
                 padding: const EdgeInsets.all(16.0),
-                child: new TextField(
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 6,
+                      child: GestureDetector(
+                        onDoubleTap:scanBarcodeNormal,
+                        child: new TextField(
+                          // onSubmitted: (value) {
+                          //   apicall();
+                          // },
 
-                  // onSubmitted: (value){
-                  //   apicall();
-                  //
-                  // },
+                          controller: BarcodeController,
+                          decoration: InputDecoration(
+                            labelText: 'Box Number',
+                            hintStyle: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 16.0,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: IconButton(
+                          icon: Icon(
+                            Icons.add_circle,
+                            color: Colors.blue,
+                            size: 30,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              if(BarcodeController.text.length!=0) {
+                                apicall(BarcodeController.text);
+                                barcodelist.add(BarcodeController.text);
+                                BarcodeController.text="";
 
-                  controller: BarcodeController,
-                  decoration: InputDecoration(
-                    labelText: 'Matl. Identification Slip',
-                    hintStyle: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16.0,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
+                              }
+                              else
+                                showDialog<void>(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  // user must tap button!
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                          "Please enter Box number"),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: Text('OK'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+
+                            });
+                          }),
+                    )
+                  ],
                 ),
               ),
+              if(barcodelist.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top:16.0,bottom: 16),
+                  child: ExpansionTile(
+                    title: Text("Box List"),
+                    initiallyExpanded: true,
+                    children: [
+                      for (int i = 0; i < barcodelist.length; i++)
+                        ListTile(
+                          title: Text(barcodelist[i]),
+                          trailing: IconButton(
+                            icon: Icon(
+                              Icons.remove_circle,
+                              size: 25,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                locationlist.removeAt(i);
+                                weightlist.removeAt(i);
+                                barcodelist.removeAt(i);
+                              });
+                            },
+                          ),
+                        )
+                    ],
+                  ),
+                ),
 
-              Padding(
-                padding: const EdgeInsets.only(left:16.0,right:16.0,bottom: 16.0),
-                child: new TextField(
-                  controller: BinScanController,
-                  decoration: InputDecoration(
-                    labelText: 'Scan Bin',
-                    hintStyle: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16.0,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
+              if(locationlist.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top:16.0,bottom: 16),
+                  child: ExpansionTile(
+                    title: Text("Location List"),
+                    initiallyExpanded: true,
+                    children: [
+                      for (int i = 0; i < locationlist.length; i++)
+                        ListTile(
+                          title: Text(locationlist[i]),
+                          // trailing: IconButton(
+                          //   icon: Icon(
+                          //     Icons.remove_circle,
+                          //     size: 25,
+                          //     color: Colors.red,
+                          //   ),
+                          //   onPressed: () {
+                          //     setState(() {
+                          //       barcodelist.removeAt(i);
+                          //     });
+                          //   },
+                          // ),
+                        )
+                    ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left:16.0,right:16.0,bottom: 16.0),
-                child: new TextField(
-                  enabled: false,
-                  controller: RackScanController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Box Weight',
-                    hintStyle: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16.0,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
+
+              if(weightlist.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top:16.0,bottom: 16),
+                  child: ExpansionTile(
+                    title: Text("Weight List"),
+                    initiallyExpanded: true,
+                    children: [
+                      for (int i = 0; i < weightlist.length; i++)
+                        ListTile(
+                          title: Text(weightlist[i]),
+                          // trailing: IconButton(
+                          //   icon: Icon(
+                          //     Icons.remove_circle,
+                          //     size: 25,
+                          //     color: Colors.red,
+                          //   ),
+                          //   onPressed: () {
+                          //     setState(() {
+                          //       barcodelist.removeAt(i);
+                          //     });
+                          //   },
+                          // ),
+                        )
+                    ],
                   ),
                 ),
-              ),
+
+              // Padding(
+              //   padding: const EdgeInsets.only(left:16.0,right:16.0,bottom: 16.0),
+              //   child: new TextField(
+              //     controller: BinScanController,
+              //     decoration: InputDecoration(
+              //       labelText: 'Location',
+              //       hintStyle: TextStyle(
+              //         color: Colors.grey,
+              //         fontSize: 16.0,
+              //       ),
+              //       border: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(5.0),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // Padding(
+              //   padding: const EdgeInsets.only(left:16.0,right:16.0,bottom: 16.0),
+              //   child: new TextField(
+              //     enabled: false,
+              //     controller: RackScanController,
+              //     keyboardType: TextInputType.number,
+              //     decoration: InputDecoration(
+              //       labelText: 'Box Weight',
+              //       hintStyle: TextStyle(
+              //         color: Colors.grey,
+              //         fontSize: 16.0,
+              //       ),
+              //       border: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(5.0),
+              //       ),
+              //     ),
+              //   ),
+              // ),
 
               SizedBox(height: height/30,),
               Row(
@@ -643,9 +830,7 @@ class PickingState extends State<Picking> {
                           BorderRadius.all(Radius.circular(50))),
                       child: FlatButton(
                         onPressed: () {
-                          if (BarcodeController.text.length !=0 &&
-                              BinScanController.text.length != 0
-                              &&
+                          if (
                               dropdownValue1 != " Select OBD Number " )
                             saveapicall();
                           else {
@@ -657,7 +842,7 @@ class PickingState extends State<Picking> {
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     title:
-                                    Text("Matl. Identification Slip"),
+                                    Text("Box Number"),
                                     actions: <Widget>[
                                       TextButton(
                                         child: Text('OK'),
@@ -735,6 +920,7 @@ class PickingState extends State<Picking> {
                       )),
                 ],
               ),
+              SizedBox(height: height/30,),
 
             ],
           ),
