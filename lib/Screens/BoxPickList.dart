@@ -1,7 +1,4 @@
-
-
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -15,8 +12,8 @@ import 'package:packingvsdispatch/Model/Page2BoxDetail.dart';
 import 'package:packingvsdispatch/Screens/Dashboard.dart';
 import 'package:packingvsdispatch/Screens/LoginPage.dart';
 import 'package:packingvsdispatch/Model/PackageGetBOXDetailsResponse.dart';
-
 import '../Model/BoxSaveResponse.dart';
+
 class Picking extends StatefulWidget {
   @override
   PickingState createState() => PickingState();
@@ -109,12 +106,6 @@ class PickingState extends State<Picking> {
     if (response.statusCode == 200)
     {
       datatablevisibility=true;
-      // int timeInMillis = 1586348737122;
-      // var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
-      // var formattedDate = DateFormat.yMMMd().format(DateTime.fromMillisecondsSinceEpoch(timeInMillis));
-      // print("headers:  ${response.headers["x-csrf-token"]}");
-      // print("headers:  ${response.headers["content-type"]}");
-      // print("headers:  ${response.headers["sap-processing-info"]}");
       li7 = Page2BoxDetailModelList.fromJson(json.decode(response.body));
       setState(() {
         loading = false;
@@ -126,7 +117,9 @@ class PickingState extends State<Picking> {
       });
 
 
-    } else {
+    }
+    else
+      {
       setState(() {
         loading = false;
       });
@@ -287,6 +280,25 @@ class PickingState extends State<Picking> {
 
       li1=BoxSaveResponseList.fromJson(json.decode(response.body));
       if (li1.details[0].success=="X") {
+        setState(() {
+          _typeAheadController.text="";
+          CustomerCodeController.text="";
+          stringlist.clear();
+         stringlist.add(" Select OBD Number ");
+         dropdownValue1 = " Select OBD Number ";
+         barcodelist.clear();
+         locationlist.clear();
+         weightlist.clear();
+         BarcodeController.text="";
+         MtrDesController.text="";
+         MtrController.text="";
+         ReqSegController.text="";
+
+
+        });
+
+
+
         showDialog<void>(
             context: context,
             barrierDismissible: true,

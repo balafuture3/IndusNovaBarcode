@@ -34,6 +34,7 @@ dependencies:
   intl: ^0.16.1
   font_awesome_flutter: ^8.11.0
   flutter_typeahead: ^1.9.1
+  fluttertoast: ^7.1.4
 
 dev_dependencies:
   flutter_test:
